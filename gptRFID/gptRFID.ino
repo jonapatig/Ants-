@@ -1,3 +1,13 @@
+/*
+PINS on Arduino uno R4
+RST = 5
+ikq = not connected
+MISO = 12
+MOSI = 11
+SCK = 13
+SDA = 10
+
+*/
 #include <SPI.h>
 #include <MFRC522.h>
 
@@ -11,9 +21,9 @@ unsigned long lastDetectedTime = 0;
 unsigned long debounceDelay = 50; // Debounce time in milliseconds
 
 // Define card UIDs
-byte card1UID[] = {0xE3, 0xDF, 0xF2, 0xF4};
-byte card2UID[] = {0x85, 0x12, 0x46, 0x70};
-byte card3UID[] = {0xF5, 0xDF, 0x43, 0x70};
+byte card1UID[] = {0x04, 0x53, 0x63, 0x62, 0xEC, 0x6B, 0x80};
+byte card2UID[] = {0x04, 0x56, 0x64, 0x62, 0xEC, 0x6B, 0x80};
+byte card3UID[] = {0x04, 0x4C, 0x64, 0x62, 0xEC, 0x6B, 0x80};
 
 void setup() {
   Serial.begin(9600);    // Initialize serial communications
