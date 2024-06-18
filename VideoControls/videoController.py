@@ -6,6 +6,7 @@ Third video: frame 352-601 or 00:03:52-00:06:01
 
 import cv2
 import pygame as pg
+import serial
 
 segments = [
     (0, 144),    # 00:00:00 - 00:01:44
@@ -37,6 +38,11 @@ channel3On = True
 def play_video_segment(video, start_frame, end_frame, fps, offset, volume1, volume2, volume3, channel1On, channel2On, channel3On):
     cap = cv2.VideoCapture(video)
     cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame + offset)
+
+    ##########################################
+    # Arduino serial as input
+    # ser = serial.Serial(COMPORT, BAUDRATE, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
+    ##########################################
 
     while cap.isOpened():
         if channel1On:
@@ -74,12 +80,28 @@ def play_video_segment(video, start_frame, end_frame, fps, offset, volume1, volu
             cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
         
         cv2.imshow('Video', frame)
-        key_pressed = cv2.waitKey(int(1000 / fps))
-        if key_pressed in [ord('1'), ord('2'), ord('3')]:
+
+        ##########################################
+        # Keyboard as input
+        current_phase = cv2.waitKey(int(1000 / fps))
+
+        if current_phase in [ord('1'), ord('2'), ord('3')]:
             cap.release()
-            return int(current_frame), int(chr(key_pressed)) - 1, volume1, volume2, volume3, channel1On, channel2On, channel3On
-        if key_pressed == ord('q'):
+            return int(current_frame), int(chr(current_phase)) - 1, volume1, volume2, volume3, channel1On, channel2On, channel3On
+        if current_phase == ord('q'):
             break
+        ##########################################
+
+        ##########################################
+        # Arduino serial as input
+        # data = ser.readline().decode().strip()
+        # if data:
+        #     current_phase = int(data)
+        #     if current_phase in [1, 2, 3]:
+        #         cap.release()
+        #         return int(current_frame), current_phase - 1, volume1, volume2, volume3, channel1On, channel2On, channel3On
+        ##########################################
+            
     
     cap.release()
     cv2.destroyAllWindows()
