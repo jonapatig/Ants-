@@ -9,13 +9,15 @@ public:
     AntHillLights(int interruptPin);
     void setup();
     void checkResetRPM();
-    void countRPM(); 
+    void countRPM();
+    void getRPM(); 
+    
    
 
 private:
     int interruptPin;
-    float RPM;
     int previousInterupt;
+    float RPM;
 }
 
 #endif //RPM

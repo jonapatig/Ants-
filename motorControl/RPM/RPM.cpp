@@ -15,9 +15,9 @@ void RPM::setup() {
 }
 
 void RPM::checkResetRPM(){
-  int currentTime = millis()
+  int currentTime = millis();
   if(currentTime - previousInterupt > 60000){
-    RPM = 0
+    RPM = 0;
   }
 }
 
@@ -27,8 +27,12 @@ void RPM::countRPM() {
   if(digitalRead(interruptPin)){  //if pin still high stop function
     return ; 
   }
-  measuredRPM = (interupt-previousInterupt)/60000 // 60000 is one minute 
-  RPM = (RPM + measuredRPM)/2 //this is a little lerp filter
-  previousInterupt = interupt
+  measuredRPM = (interupt-previousInterupt)/60000; // 60000 is one minute 
+  RPM = (RPM + measuredRPM)/2; //this is a little lerp filter
+  previousInterupt = interupt;
+}
+
+void RPM::getRPM(){
+  return RPM;
 }
 
