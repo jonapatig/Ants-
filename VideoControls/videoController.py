@@ -5,6 +5,7 @@ Third video: frame 352-601 or 00:03:52-00:06:01
 """
 
 import cv2
+import pygame as pg
 
 segments = [
     (0, 144),    # 00:00:00 - 00:01:44
@@ -12,11 +13,58 @@ segments = [
     (352, 601)   # 00:03:52 - 00:06:01
 ]
 
-def play_video_segment(video, start_frame, end_frame, fps, offset):
+pg.mixer.init()
+pg.init()
+
+track1 = pg.mixer.Sound("VideoControls/Techno1.wav")
+track2 = pg.mixer.Sound("VideoControls/Techno2.wav")
+track3 = pg.mixer.Sound("VideoControls/Techno3.wav")
+
+pg.mixer.set_num_channels(3)
+
+pg.mixer.find_channel().play(track1, loops=-1)
+pg.mixer.find_channel().play(track2, loops=-1)
+pg.mixer.find_channel().play(track3, loops=-1)
+
+volume1 = 1.0
+volume2 = 1.0
+volume3 = 1.0
+
+channel1On = True
+channel2On = True
+channel3On = True
+
+def play_video_segment(video, start_frame, end_frame, fps, offset, volume1, volume2, volume3, channel1On, channel2On, channel3On):
     cap = cv2.VideoCapture(video)
     cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame + offset)
 
     while cap.isOpened():
+        if channel1On:
+            if volume1 < 1.0:
+                volume1 += 0.01
+        else:
+            if volume1 > 0.0:
+                volume1 -= 0.01
+        
+        if channel2On:
+            if volume2 < 1.0:
+                volume2 += 0.01
+        else:
+            if volume2 > 0.0:
+                volume2 -= 0.01
+
+        if channel3On:
+            if volume3 < 1.0:
+                volume3 += 0.01
+        else:
+            if volume3 > 0.0:
+                volume3 -= 0.01
+
+
+        track1.set_volume(volume1)
+        track2.set_volume(volume2)
+        track3.set_volume(volume3)
+
         ret, frame = cap.read()
         if not ret:
             break
@@ -29,7 +77,7 @@ def play_video_segment(video, start_frame, end_frame, fps, offset):
         key_pressed = cv2.waitKey(int(1000 / fps))
         if key_pressed in [ord('1'), ord('2'), ord('3')]:
             cap.release()
-            return int(current_frame), int(chr(key_pressed)) - 1
+            return int(current_frame), int(chr(key_pressed)) - 1, volume1, volume2, volume3, channel1On, channel2On, channel3On
         if key_pressed == ord('q'):
             break
     
@@ -45,11 +93,28 @@ start_frame, end_frame = segments[current_segment]
 start_offset = 0
 
 while True:
-    result = play_video_segment(video_path, start_frame, end_frame, fps, start_offset)
+    result = play_video_segment(video_path, start_frame, end_frame, fps, start_offset, volume1, volume2, volume3, channel1On, channel2On, channel3On)
     if result is None:
         break
 
-    frame_ended, segment_index = result
+    frame_ended, segment_index, volume1, volume2, volume3, channel1On, channel2On, channel3On = result
+
+    if segment_index == 0:
+        channel1On = True
+        channel2On = True
+        channel3On = True
+
+    if segment_index == 1:
+        channel1On = True
+        channel2On = False
+        channel3On = True
+
+    if segment_index == 2:
+        channel1On = True
+        channel2On = False
+        channel3On = False
+
+    print(f"Volume 1: {volume1}, Volume 2: {volume2}, Volume 3: {volume3}")
 
     start_offset = frame_ended - start_frame
     
