@@ -1,8 +1,7 @@
 // file to test RPMclass
 #include "RPMclass.h"
 
-const int interruptPin = 2;  // Pin 2 is used for the interrupt (depends on the board)
-
+const int interruptPin = 2;  // Pin 2 is used for the interrupt
 RPMclass RPMcounter(interruptPin);
 
 void setup() {
@@ -11,11 +10,12 @@ void setup() {
 }
 
 void loop() {
-    if (RPMcounter.getInterruptFlag()) {
-        Serial.print("RPM: ");
-        Serial.println(RPMcounter.getRPM());
-    }
-    
+    // if (RPMcounter.getInterruptFlag()) {
+        
+    // }
+    Serial.print("RPM: ");
+    Serial.println(RPMcounter.getRPM());
+
     RPMcounter.checkResetRPM();
     delay(50);
 }
