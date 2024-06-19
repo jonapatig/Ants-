@@ -1,23 +1,21 @@
-/// @file    RPM.h
+/// @file    RPMclass.h
 /// @brief   Class to measure RPM
 
-#ifndef RPM
-#define RPM
+#ifndef RPMclass_H
+#define RPMclass_H
 
-class RPM {
+class RPMclass {
 public:
-    RPM(int interruptPin);
+    RPMclass(int interruptPin);
     void setup();
     void checkResetRPM();
     void countRPM();
-    float getRPM(); 
-    
-   
+    float getRPM();  // Return type should be float
 
 private:
     int interruptPin;
     int previousInterrupt;  // Corrected typo
     float RPM;
-}
+};
 
-#endif //RPM
+#endif // RPMclass_H
