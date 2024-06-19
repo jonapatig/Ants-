@@ -4,9 +4,7 @@
 #include "RPM.h"
 
 RPM::RPM(int interruptPin) 
-    : interruptPin(interruptPin) {
-    RPM = 0;
-    previousInterupt =0;
+    : interruptPin(interruptPin), previousInterrupt(0), RPM(0) {  // Initialize RPM and previousInterrupt in initializer list
 }
 
 void RPM::setup() {
@@ -15,24 +13,26 @@ void RPM::setup() {
 }
 
 void RPM::checkResetRPM(){
-  int currentTime = millis();
+  long currentTime = millis();
   if(currentTime - previousInterupt > 60000){
     RPM = 0;
   }
 }
 
 void RPM::countRPM() {
-  int interupt = millis();
-  delayMicroseconds(50);          //delay 50 microseconds to prevent accidental triggers
-  if(digitalRead(interruptPin)){  //if pin still high stop function
-    return ; 
+  long interruptTime = millis();
+  if (interruptTime - previousInterrupt < 50) {
+    // Ignore interrupts that occur within 50ms to debounce
+    return;
   }
-  measuredRPM = (interupt-previousInterupt)/60000; // 60000 is one minute 
-  RPM = (RPM + measuredRPM)/2; //this is a little lerp filter
-  previousInterupt = interupt;
+  //60000 is one minute, there are two triggers on one rotation so divede by to makes 30000
+  float measuredRPM = 30000.0 / (interruptTime - previousInterrupt);
+
+  RPM = measuredRPM; // change this to add filters and such
+  previousInterrupt = interruptTime;
 }
 
-void RPM::getRPM(){
+float RPM::getRPM(){
   return RPM;
 }
 

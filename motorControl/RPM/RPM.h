@@ -4,19 +4,19 @@
 #ifndef RPM
 #define RPM
 
-class AntHillLights {
+class RPM {
 public:
-    AntHillLights(int interruptPin);
+    RPM(int interruptPin);
     void setup();
     void checkResetRPM();
     void countRPM();
-    void getRPM(); 
+    float getRPM(); 
     
    
 
 private:
     int interruptPin;
-    int previousInterupt;
+    int previousInterrupt;  // Corrected typo
     float RPM;
 }
 
