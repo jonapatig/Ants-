@@ -1,9 +1,9 @@
 #include "AntHillLights.h"
 #include "LEDControlCircle.h"
 #define Ant_NUM_LEDS 133
-#define Ant_DATA_PIN 4
+#define Ant_DATA_PIN 3
 #define Vine_NUM_LEDS 96
-#define Vine_DATA_PIN 3
+#define Vine_DATA_PIN 4
 // Corrected array definition
 //  CRGB::Aquamarine, CRGB::Chartreuse, CRGB::Crimson, CRGB::Wheat,CRGB::SpringGreen,CRGB::Salmon,CRGB::Plaid,CRGB::PaleGreen,CRGB::Navy,CRGB::Orange, CRGB::Gold,CRGB::Goldenrod,, CRGB::Tomato, CRGB::Sienna, CRGB::Purple,CRGB::PaleVioletRed
 
