@@ -1,7 +1,7 @@
 #include <FastLED.h>
 #include <TaskScheduler.h>
 #include "AntSelect.h"
-#include "Pacifica.h"
+// #include "Pacifica.h"
 #include "CrownLeds.h"
 
 Scheduler runner1;
@@ -11,7 +11,7 @@ Scheduler resetRunner;
 
 void breathingLever();
 void breathingHill();
-void pacifica_loop();
+// void pacifica_loop();
 void displayAnt1();
 void crownReset();
 
@@ -35,7 +35,7 @@ CRGB ledsCrown[NUM_LEDS_CROWN];
 
 Task effectHill(50, TASK_FOREVER, &breathingHill, &runner1, true);
 Task effectLever(50, TASK_FOREVER, &breathingLever, &runner2, true);
-Task effectHalo(50, TASK_FOREVER, &pacifica_loop, &runner2, true);
+// Task effectHalo(50, TASK_FOREVER, &pacifica_loop, &runner2, true);
 Task effectCrown(50, TASK_FOREVER, &displayAnt1, &runner3, true);
 Task effectReset(50, TASK_FOREVER, &reset, &resetRunner, true);
 
@@ -53,14 +53,14 @@ void loop() {
 
   // Check if 5 seconds have passed
   if (currentTime - lastSwitchTime >= 15000) {
-    state = (state + 1) % 3;
+    state = (state + 1) % 4;
     lastSwitchTime = currentTime;
   }
 
   // Execute the appropriate runner based on the state
   switch (state) {
     case 0:
-      runner3.execute();
+      // runner3.execute();
       break;
     case 1:
       runner2.execute();
