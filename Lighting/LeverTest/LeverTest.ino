@@ -1,24 +1,48 @@
 #include <FastLED.h>
 #include <TaskScheduler.h>
-#include "BreathingLever.h"
+#include "AntSelect.h"
+#include "Pacifica.h"
+#include "CrownLeds.h"
 
 Scheduler runner1;
 Scheduler runner2;
+Scheduler runner3;
+Scheduler resetRunner;
 
 void breathingLever();
 void breathingHill();
+void pacifica_loop();
+void displayAnt1();
+void crownReset();
 
-#define NUM_LEDS 180
-#define DATA_PIN 3
+void reset(){
+  crownReset();
+}
 
-CRGB leds[NUM_LEDS];
+const int NUM_LEDS_ANTS = 180;
+const int DATA_PIN_ANTS = 3;
+
+const int NUM_LEDS_HALO = 96;
+const int DATA_PIN_HALO = 4;
+
+const int NUM_LEDS_CROWN = 160;
+const int DATA_PIN_CROWN = 5;
+
+
+CRGB ledsAnts[NUM_LEDS_ANTS];
+CRGB ledsHalo[NUM_LEDS_HALO];
+CRGB ledsCrown[NUM_LEDS_CROWN];
 
 Task effectHill(50, TASK_FOREVER, &breathingHill, &runner1, true);
 Task effectLever(50, TASK_FOREVER, &breathingLever, &runner2, true);
+Task effectHalo(50, TASK_FOREVER, &pacifica_loop, &runner2, true);
+Task effectCrown(50, TASK_FOREVER, &displayAnt1, &runner3, true);
+Task effectReset(50, TASK_FOREVER, &reset, &resetRunner, true);
 
 void setup() {
-
-  FastLED.addLeds<WS2812B, 3, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, DATA_PIN_ANTS, GRB>(ledsAnts, NUM_LEDS_ANTS);
+  FastLED.addLeds<WS2812B, DATA_PIN_HALO, GRB>(ledsHalo, NUM_LEDS_HALO);
+  FastLED.addLeds<WS2812B, DATA_PIN_CROWN, GRB>(ledsCrown, NUM_LEDS_CROWN);
   FastLED.setBrightness(50);
 }
 
@@ -29,19 +53,25 @@ void loop() {
 
   // Check if 5 seconds have passed
   if (currentTime - lastSwitchTime >= 15000) {
-    state = (state + 1) % 2;
+    state = (state + 1) % 3;
     lastSwitchTime = currentTime;
   }
 
   // Execute the appropriate runner based on the state
   switch (state) {
     case 0:
-      runner1.execute();
+      runner3.execute();
       break;
     case 1:
       runner2.execute();
       break;
+    case 2:
+      runner1.execute();
+      break;
+    case 3:
+      resetRunner.execute();
   }
+  // runner3.execute();
   
   FastLED.show();
 }

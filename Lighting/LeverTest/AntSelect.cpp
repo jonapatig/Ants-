@@ -1,4 +1,11 @@
-#include "BreathingLever.h"
+#include "AntSelect.h"
+
+// int ZONE1_START = 0;
+// int ZONE1_END = 97;
+// int ZONE2_START = 98;
+// int ZONE2_END = 129;
+// int ZONE3_START = 130;
+// int ZONE3_END = 149;
 
 void breathingLever() {
   static uint32_t lastTime = 0;
@@ -27,15 +34,15 @@ void breathingLever() {
     CRGB currentColor1 = color1.fadeToBlackBy(255 - brightness);
     CRGB currentColor2 = color2.fadeToBlackBy(255 - brightness);
 
-    for(int i = ZONE1_START; i <= ZONE1_END; i++){
-      leds[i] = CRGB::Black;
+    for(int i = 0; i <= 97; i++){
+      ledsAnts[i] = CRGB::Black;
     }
     // Set the color based on the brightness
-    for (int i = ZONE2_START; i <= ZONE2_END; i++) {
-      leds[i] = zone2Active ? currentColor1 : CRGB::Black;
+    for (int i = 98; i <= 129; i++) {
+      ledsAnts[i] = zone2Active ? currentColor1 : CRGB::Black;
     }
-    for (int i = ZONE3_START; i <= ZONE3_END; i++) {
-      leds[i] = zone3Active ? currentColor2 : CRGB::Black;
+    for (int i = 130; i <= 149; i++) {
+      ledsAnts[i] = zone3Active ? currentColor2 : CRGB::Black;
     }
 
     lastTime = currentTime;
@@ -70,14 +77,14 @@ void breathingHill() {
     CRGB currentColor2 = color2.fadeToBlackBy(255 - brightness);
 
     // Set the color based on the brightness
-    for (int i = ZONE1_START; i <= ZONE1_END; i++) {
-      leds[i] = zone1Active ? currentColor1 : CRGB::Black;
+    for (int i = 0; i <= 97; i++) {
+      ledsAnts[i] = zone1Active ? currentColor1 : CRGB::Black;
     }
-    for (int i = ZONE2_START; i <= ZONE2_END; i++) {
-      leds[i] = zone2Active ? currentColor2 : CRGB::Black;
+    for (int i = 98; i <= 129; i++) {
+      ledsAnts[i] = zone2Active ? currentColor2 : CRGB::Black;
     }
-    for (int i = ZONE3_START; i <= ZONE3_END; i++) {
-      leds[i] = CRGB::Black;
+    for (int i = 130; i <= 149; i++) {
+      ledsAnts[i] = CRGB::Black;
     }
 
     lastTime = currentTime;
