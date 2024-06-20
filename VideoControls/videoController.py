@@ -23,7 +23,7 @@ track_3 = pg.mixer.Sound("VideoControls/Techno3.wav")
 
 sfx = [pg.mixer.Sound("VideoControls/sfxTest1.wav"), pg.mixer.Sound("VideoControls/sfxTest2.wav"), pg.mixer.Sound("VideoControls/sfxTest3.wav")]
 
-pg.mixer.set_num_channels(10)
+pg.mixer.set_num_channels(50)
 
 pg.mixer.find_channel().play(track_1, loops=-1)
 pg.mixer.find_channel().play(track_2, loops=-1)
