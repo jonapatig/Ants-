@@ -23,7 +23,7 @@ const int NUM_LEDS_ANTS = 180;
 const int DATA_PIN_ANTS = 3;
 
 const int NUM_LEDS_HALO = 96;
-const int DATA_PIN_HALO = 4;
+const int DATA_PIN_HALO = 6;
 
 const int NUM_LEDS_CROWN = 160;
 const int DATA_PIN_CROWN = 5;
@@ -36,8 +36,8 @@ CRGB ledsCrown[NUM_LEDS_CROWN];
 Task effectHill(50, TASK_FOREVER, &breathingHill, &runner1, true);
 Task effectLever(50, TASK_FOREVER, &breathingLever, &runner2, true);
 // Task effectHalo(50, TASK_FOREVER, &pacifica_loop, &runner2, true);
-Task effectCrown(50, TASK_FOREVER, &displayAnt1, &runner3, true);
-Task effectReset(50, TASK_FOREVER, &reset, &resetRunner, true);
+Task effectCrown(50, TASK_FOREVER, &displayAnt1, &runner1, true);
+Task effectReset(50, TASK_FOREVER, &reset, &runner2, true);
 
 void setup() {
   FastLED.addLeds<WS2812B, DATA_PIN_ANTS, GRB>(ledsAnts, NUM_LEDS_ANTS);
@@ -53,23 +53,18 @@ void loop() {
 
   // Check if 5 seconds have passed
   if (currentTime - lastSwitchTime >= 15000) {
-    state = (state + 1) % 4;
+    state = (state + 1) % 2;
     lastSwitchTime = currentTime;
   }
 
   // Execute the appropriate runner based on the state
   switch (state) {
     case 0:
-      // runner3.execute();
+      runner1.execute();
       break;
     case 1:
       runner2.execute();
-      break;
-    case 2:
-      runner1.execute();
-      break;
-    case 3:
-      resetRunner.execute();
+
   }
   // runner3.execute();
   

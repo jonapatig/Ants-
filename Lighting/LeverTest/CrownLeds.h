@@ -9,6 +9,6 @@
 
 extern CRGB ledsCrown[];
 
-
+void crownReset();
 void diplayAnt1();
 #endif // CROWNLEDS_H
