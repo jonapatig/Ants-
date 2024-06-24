@@ -1,14 +1,18 @@
-#include <RFIDclass.h>
-
-#define SS_PIN 10
-#define RST_PIN 5
+#include "RFIDclass.h"
+#include <Arduino.h>
+#define SS_PIN 49
+#define RST_PIN 48
 
 RFIDclass rfid(SS_PIN, RST_PIN);
 
 void setup() {
-    rfid.setup();
+  Serial.begin(9600);
+  while (!Serial) {
+  ; // Wait for serial port to connect. Needed for native USB
+}
+  rfid.setup();
 }
 
 void loop() {
-    rfid.main();
+  rfid.main();
 }

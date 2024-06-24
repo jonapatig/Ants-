@@ -20,13 +20,13 @@ void reset(){
 }
 
 const int NUM_LEDS_ANTS = 180;
-const int DATA_PIN_ANTS = 3;
+const int DATA_PIN_ANTS = 7;
 
 const int NUM_LEDS_HALO = 96;
-const int DATA_PIN_HALO = 6;
+const int DATA_PIN_HALO = 5;
 
 const int NUM_LEDS_CROWN = 160;
-const int DATA_PIN_CROWN = 5;
+const int DATA_PIN_CROWN = 6;
 
 
 CRGB ledsAnts[NUM_LEDS_ANTS];

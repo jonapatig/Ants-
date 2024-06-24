@@ -57,10 +57,17 @@ void myPercentage(float percentage, CRGB color, unsigned long int duration) {
     }
 }
 
-void displayAnt1() {
+void displayAntA() {
     myPercentage(0.98, CRGB::Gold, 5000);
 }
 
+void displayAntR() {
+    myPercentage(0.7, CRGB::Gold, 5000);
+}
+
+void displayAntY() {
+    myPercentage(0.1, CRGB::Gold, 5000);
+}
 void crownReset() {
     static uint32_t lastTime = 0;
     static int rows[5] = {31, 32, 32, 32, 31};
@@ -96,6 +103,7 @@ void crownReset() {
         }
 
         lastTime = currentTime;
+
         if (allRowsDimmed) {
             resetInProgress = false; // Reset is complete
         }
