@@ -2,7 +2,7 @@
 #include "ContinentSegment.h"
 
 // Declare a Segment object globally
-ContinentSegment Europe(6, 4);
+ContinentSegment Europe(1, 0);
 ContinentSegment SouthAmerica(7, 3);
 
 
@@ -11,7 +11,7 @@ long int timer;
 void setup() {
   Serial.begin(9600);
   Serial.println("Setup Initialized");
-  pinMode(3, INPUT_PULLUP);
+  pinMode(0, INPUT_PULLUP);
   pinMode(4, INPUT_PULLUP);
   Europe.begin();
   SouthAmerica.begin();

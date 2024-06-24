@@ -15,12 +15,12 @@ RPMclass::RPMclass(int interruptPin)
 
 void RPMclass::setup() {
     delay(2000); // whatever is safe or something
-    attachInterrupt(digitalPinToInterrupt(interruptPin), RPMclass::countRPM, FALLING);  // Attach the interrupt
+    attachInterrupt(digitalPinToInterrupt(interruptPin), RPMclass::countRPM, CHANGE);  // Attach the interrupt
 }
 
 void RPMclass::checkResetRPM(){
     long currentTime = millis();
-    if(currentTime - previousInterrupt > 60000){  // Corrected typo
+    if(currentTime - previousInterrupt > 1000){  // Corrected typo
         RPM = 0;
     }
 }
@@ -33,7 +33,7 @@ void RPMclass::countRPM() {
             return;
         }
         // 60000 is one minute, there are two triggers on one rotation so divide by two makes 30000
-        float measuredRPM = 30000.0 / (interruptTime - instance->previousInterrupt);
+        float measuredRPM = 15000.0 / (interruptTime - instance->previousInterrupt);
 
         instance->RPM = measuredRPM; // change this to add filters and such
         instance->previousInterrupt = interruptTime;
