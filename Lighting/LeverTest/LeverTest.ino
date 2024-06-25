@@ -1,7 +1,6 @@
 #include <FastLED.h>
 #include <TaskScheduler.h>
 #include "AntSelect.h"
-// #include "Pacifica.h"
 #include "CrownLeds.h"
 
 Scheduler runner1;
@@ -28,10 +27,14 @@ const int DATA_PIN_HALO = 5;
 const int NUM_LEDS_CROWN = 160;
 const int DATA_PIN_CROWN = 6;
 
+const int NUM_LEDS_BRANCH = 22;
+const int DATA_PIN_BRANCH = 7;
+
 
 CRGB ledsAnts[NUM_LEDS_ANTS];
-CRGB ledsHalo[NUM_LEDS_HALO];
+// CRGB ledsHalo[NUM_LEDS_HALO];
 CRGB ledsCrown[NUM_LEDS_CROWN];
+// CRGB ledsBranch[NUM_LEDS_CROWN];
 
 Task effectHill(50, TASK_FOREVER, &breathingHill, &runner1, true);
 Task effectLever(50, TASK_FOREVER, &breathingLever, &runner2, true);
@@ -41,8 +44,9 @@ Task effectReset(50, TASK_FOREVER, &reset, &runner2, true);
 
 void setup() {
   FastLED.addLeds<WS2812B, DATA_PIN_ANTS, GRB>(ledsAnts, NUM_LEDS_ANTS);
-  FastLED.addLeds<WS2812B, DATA_PIN_HALO, GRB>(ledsHalo, NUM_LEDS_HALO);
+  // FastLED.addLeds<WS2812B, DATA_PIN_HALO, GRB>(ledsHalo, NUM_LEDS_HALO);
   FastLED.addLeds<WS2812B, DATA_PIN_CROWN, GRB>(ledsCrown, NUM_LEDS_CROWN);
+  // FastLED.addLeds<WS2811, DATA_PIN_BRANCH, GRB>(ledsBranch, NUM_LEDS_BRANCH);
   FastLED.setBrightness(50);
 }
 
