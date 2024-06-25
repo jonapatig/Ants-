@@ -7,10 +7,10 @@
 #include "Branch.h"
 #include "ContinentSegment.h"
 
-const int leverPin = 22;          // Lever
-const int rfid1 = 23;             // Ant A
-const int rfid2 = 24;             // Ant Y
-const int rfid3 = 25;             // Ant R
+const int leverPin = 22;  // Lever
+const int rfid1 = 23;     // Ant A
+const int rfid2 = 24;     // Ant Y
+const int rfid3 = 25;     // Ant R
 
 // Declare a Segment object globally
 ContinentSegment MEX(14, 15);
@@ -51,8 +51,8 @@ bool currentLeverState;
 bool state0Activated = false;
 bool state123Activated = false;
 
-int currentState = 0;
-static int state = 0;
+int prevState = 0;
+int state = 0;
 
 
 void raiseArgentineOrigin(long int time) {
@@ -96,8 +96,8 @@ void raiseYellowCrazySpread(long int time) {
 
 // Task Functions
 void codeReset(uint32_t currentTime) {
-  if (state != currentState) {
-    switch (currentState) {
+  if (state != prevState) {
+    switch (prevState) {
       case 1:
         raiseArgentineOrigin(currentTime);
         break;
@@ -120,6 +120,8 @@ void codeReset(uint32_t currentTime) {
         raiseYellowCrazySpread(currentTime);
         break;
     }
+    state0Activated = false;
+    state123Activated = false;
     crownReset();
   }
   delay(1);
@@ -127,14 +129,14 @@ void codeReset(uint32_t currentTime) {
 
 void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
-  currentState = state;
+  prevState = state;
   breathingHill();
 }
 
 void codeIdleA(uint32_t currentTime) {
-  if (state != currentState) {
+  if (state != prevState) {
     Serial.println(state);
-    currentState = state;
+    prevState = state;
     raiseArgentineOrigin(currentTime);
   }
   breathingLever();
@@ -142,9 +144,9 @@ void codeIdleA(uint32_t currentTime) {
 }
 
 void codeIdleR(uint32_t currentTime) {
-  if (state != currentState) {
+  if (state != prevState) {
     Serial.println(state);
-    currentState = state;
+    prevState = state;
     raiseRedFireOrigin(currentTime);
   }
   breathingLever();
@@ -152,9 +154,9 @@ void codeIdleR(uint32_t currentTime) {
 }
 
 void codeIdleY(uint32_t currentTime) {
-  if (state != currentState) {
+  if (state != prevState) {
     Serial.println(state);
-    currentState = state;
+    prevState = state;
     raiseYellowCrazyOrigin(currentTime);
   }
   breathingLever();
@@ -162,9 +164,9 @@ void codeIdleY(uint32_t currentTime) {
 }
 
 void codeActiveA(uint32_t currentTime) {
-  if (state != currentState) {
+  if (state != prevState) {
     Serial.println(state);
-    currentState = state;
+    prevState = state;
     raiseArgentineSpread(currentTime);
   }
   displayAntA();
@@ -172,9 +174,9 @@ void codeActiveA(uint32_t currentTime) {
 }
 
 void codeActiveR(uint32_t currentTime) {
-  if (state != currentState) {
+  if (state != prevState) {
     Serial.println(state);
-    currentState = state;
+    prevState = state;
     raiseRedFireSpread(currentTime);
   }
   displayAntR();
@@ -182,9 +184,9 @@ void codeActiveR(uint32_t currentTime) {
 }
 
 void codeActiveY(uint32_t currentTime) {
-  if (state != currentState) {
+  if (state != prevState) {
     Serial.println(state);
-    currentState = state;
+    prevState = state;
     raiseYellowCrazySpread(currentTime);
   }
   displayAntY();
@@ -271,6 +273,7 @@ void loop() {
       }
     }
     currentLeverState = lever;
+    state0Activated = false;
   } else {
     state = 0;
     state0Activated = true;
