@@ -1,12 +1,12 @@
-#ifndef ECOHALO_H
-#define ECOHALO_H
+// #ifndef ECOHALO_H
+// #define ECOHALO_H
 
-#include <FastLED.h>
+// #include <FastLED.h>
 
-extern CRGB ledsHalo[];
+// extern CRGB ledsHalo[];
 
-void fullEco();
-void damagedEco1();
-void damagedEco2();
+// void fullEco();
+// void damagedEco1();
+// void damagedEco2();
 
-#endif
+// #endif
