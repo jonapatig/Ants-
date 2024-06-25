@@ -4,13 +4,14 @@
 
 #include "AntSelect.h"
 #include "CrownLeds.h"
-#include "RFIDclass.h"
+#include "EcoHalo.h"
+#include "Branch.h"
 #include "ContinentSegment.h"
 
-const int SS_PIN = 48;
-const int RST_PIN = 49;
-
-RFIDclass rfid(SS_PIN, RST_PIN);
+const int leverPin = 22;          // Lever
+const int rfid1 = 23;             // Ant A
+const int rfid2 = 24;             // Ant Y
+const int rfid3 = 25;             // Ant R
 
 // Declare a Segment object globally
 ContinentSegment MEX(14, 15);
@@ -33,69 +34,143 @@ void crownReset();
 
 // LED Definitions
 const int NUM_LEDS_ANTS = 180;
-const int DATA_PIN_ANTS = 47;
+const int DATA_PIN_ANTS = 18;
 
 const int NUM_LEDS_HALO = 96;
-const int DATA_PIN_HALO = 45;
+const int DATA_PIN_HALO = 19;
 
 const int NUM_LEDS_CROWN = 160;
-const int DATA_PIN_CROWN = 44;
+const int DATA_PIN_CROWN = 20;
 
-const int time = 500;
+const int NUM_LEDS_BRANCH = 22;
+const int DATA_PIN_BRANCH = 21;
 
 CRGB ledsAnts[NUM_LEDS_ANTS];
 CRGB ledsHalo[NUM_LEDS_HALO];
 CRGB ledsCrown[NUM_LEDS_CROWN];
+CRGB ledsBranch[NUM_LEDS_BRANCH];
+
+const int time = 500;
+bool currentLeverState;
+
+int currentState = 0;
+static int state = 0;
 
 // Task Functions
+void codeReset() {
+  if (state != currentState) {
+    switch (state) {
+      case 1:
+        SSA.toggleMove(time);
+        break;
+      case 2:
+        SSA.toggleMove(time);
+        NSA.toggleMove(time);
+        break;
+      case 3:
+        SEA.toggleMove(time);
+        break;
+      case 4:
+        SSA.toggleMove(time);
+        MEX.toggleMove(time);
+        NSA.toggleMove(time);
+        EU.toggleMove(time);
+        SA.toggleMove(time);
+        AUS.toggleMove(time);
+        break;
+      case 5:
+        SSA.toggleMove(time);
+        NSA.toggleMove(time);
+        MEX.toggleMove(time);
+        SEA.toggleMove(time);
+        AUS.toggleMove(time);
+        break;
+      case 6:
+        SEA.toggleMove(time);
+        MEX.toggleMove(time);
+        SA.toggleMove(time);
+        AUS.toggleMove(time);
+        break;
+    }  
+    Serial.println(state);
+    currentState = state;
+    crownReset();
+  }
+  delay(20);
+}
+
 void codeIdle() {
+  codeReset();
   breathingHill();
 }
 
 void codeIdleA() {
-  SSA.toggleMove(time);
+  if (state != currentState) {
+    Serial.println(state);
+    currentState = state;
+    SSA.toggleMove(time);
+  }
   breathingLever();
-  displayAntA();
+  delay(20);
 }
 
 void codeIdleR() {
-  NSA.toggleMove(time);
-  SSA.toggleMove(time);
-}
-void codeShowIdleR() {
-  displayAntR();
+  if (state != currentState) {
+    Serial.println(state);
+    currentState = state;
+    SSA.toggleMove(time);
+    NSA.toggleMove(time);
+  }
+  breathingLever();
+  delay(20);
 }
 
 void codeIdleY() {
-  SEA.toggleMove(time);
+  if (state != currentState) {
+    Serial.println(state);
+    currentState = state;
+    SEA.toggleMove(time);
+  }
   breathingLever();
+  delay(20);
 }
 
 void codeActiveA() {
-  MEX.toggleMove(time);
-  NSA.toggleMove(time);
-  EU.toggleMove(time);
-  SA.toggleMove(time);
-  AUS.toggleMove(time);
+  if (state != currentState) {
+    Serial.println(state);
+    currentState = state;
+    MEX.toggleMove(time);
+    NSA.toggleMove(time);
+    EU.toggleMove(time);
+    SA.toggleMove(time);
+    AUS.toggleMove(time);
+  }
   displayAntA();
+  delay(20);
 }
 
 void codeActiveR() {
-  MEX.toggleMove(time);
-  SEA.toggleMove(time);
-  AUS.toggleMove(time);
+  if (state != currentState) {
+    Serial.println(state);
+    currentState = state;
+    MEX.toggleMove(time);
+    SEA.toggleMove(time);
+    AUS.toggleMove(time);
+  }
   displayAntR();
+  delay(20);
 }
 
 void codeActiveY() {
-  MEX.toggleMove(time);
-  SA.toggleMove(time);
-  AUS.toggleMove(time);
+  if (state != currentState) {
+    Serial.println(state);
+    currentState = state;
+    MEX.toggleMove(time);
+    SA.toggleMove(time);
+    AUS.toggleMove(time);
+  }
   displayAntY();
-}
-
-void codeReset() {
-  crownReset();
+  delay(20);
 }
 
 // Task Declarations
@@ -106,16 +181,20 @@ Task taskIdleY(50, TASK_FOREVER, &codeIdleY);
 Task taskActiveA(50, TASK_FOREVER, &codeActiveA);
 Task taskActiveR(50, TASK_FOREVER, &codeActiveR);
 Task taskActiveY(50, TASK_FOREVER, &codeActiveY);
-Task taskReset(50, TASK_FOREVER, &codeReset);
-Task showIdleR(50,TASK_FOREVER, &codeShowIdleR);
 
 void setup() {
   Serial.begin(9600);
-  // while (!Serial) {
-  //   ; // Wait for serial port to connect. Needed for native USB
-  // }
   Serial.println("Setup Initialized");
 
+  currentLeverState = !digitalRead(leverPin);
+
+  // External Arduino Setup
+  pinMode(leverPin, INPUT);
+  pinMode(rfid1, INPUT);
+  pinMode(rfid2, INPUT);
+  pinMode(rfid3, INPUT);
+
+  // Servo Setup
   pinMode(15, INPUT_PULLUP);
   pinMode(2, INPUT_PULLUP);
   pinMode(4, INPUT_PULLUP);
@@ -132,18 +211,19 @@ void setup() {
   SEA.begin();
   AUS.begin();
 
+  // LED Setup
   FastLED.addLeds<WS2812B, DATA_PIN_ANTS, GRB>(ledsAnts, NUM_LEDS_ANTS);
   FastLED.addLeds<WS2812B, DATA_PIN_HALO, GRB>(ledsHalo, NUM_LEDS_HALO);
   FastLED.addLeds<WS2812B, DATA_PIN_CROWN, GRB>(ledsCrown, NUM_LEDS_CROWN);
+  FastLED.addLeds<WS2812B, DATA_PIN_BRANCH, GRB>(ledsBranch, NUM_LEDS_BRANCH);
   FastLED.setBrightness(50);
-  rfid.setup();
+
   delay(500);
 }
 
 void loop() {
   static uint32_t lastSwitchTime = 0;
-  uint32_t currentTime = millis();
-  static int state = 0;
+  long int time = millis();
 
   // Disable all tasks
   taskIdle.disable();
@@ -153,28 +233,38 @@ void loop() {
   taskActiveA.disable();
   taskActiveR.disable();
   taskActiveY.disable();
-  taskReset.disable();
 
-  int rfidState = rfid.main();
-  // int rfidState = 1;
-  Serial.print("RFID State: ");
-  Serial.println(rfidState);
+  bool lever = digitalRead(leverPin);
+  bool ant1 = digitalRead(rfid1);
+  bool ant2 = digitalRead(rfid2);
+  bool ant3 = digitalRead(rfid3);
 
-  switch (rfidState) {
-    case 0:
-      state = 0;
-      break;
-    case 1:
-      state = 4;
-      break;
-    case 2:
-      state = 5;
-      break;
-    case 3:
-      state = 6;
-      break;
+  // Serial.println(lever);
+
+  // Decide which runmode to do
+  if (ant1 || ant2 || ant3) {
+    if (lever != currentLeverState) {
+      if (ant1) {
+        state = 4;
+      } else if (ant2) {
+        state = 5;
+      } else if (ant3) {
+        state = 6;
+      }
+    } else {
+      if (ant1) {
+        state = 1;
+      } else if (ant2) {
+        state = 2;
+      } else if (ant3) {
+        state = 3;
+      }
+    }
+    currentLeverState = lever;
+  } else {
+    state = 0;
   }
-  
+
   // Enable the current task based on the state
   switch (state) {
     case 0:
@@ -188,8 +278,6 @@ void loop() {
     case 2:
       runner.addTask(taskIdleR);
       taskIdleR.enable();
-      runner.addTask(showIdleR);
-      showIdleR.enable();
       break;
     case 3:
       runner.addTask(taskIdleY);
@@ -207,13 +295,15 @@ void loop() {
       runner.addTask(taskActiveY);
       taskActiveY.enable();
       break;
-    case 7:
-      runner.addTask(taskReset);
-      taskReset.enable();
-      break;
   }
-
+  MEX.move(180, time);
+  NSA.move(180, time);
+  SSA.move(180, time);
+  EU.move(180, time);
+  SA.move(180, time);
+  SEA.move(180, time);
+  AUS.move(180, time);
   runner.execute();  // Execute the scheduler
   FastLED.show();
-  delay(20);
+  delay(10);
 }
