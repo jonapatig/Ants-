@@ -26,6 +26,7 @@ void RFIDclass::main() {
             cardPresent = true; // Set the card present flag
 
             int cardNumber = getCardNumber();
+            Serial.println(cardNumber);
             digitalWrite(card1Pin, cardNumber == 1 ? HIGH : LOW);
             digitalWrite(card2Pin, cardNumber == 2 ? HIGH : LOW);
             digitalWrite(card3Pin, cardNumber == 3 ? HIGH : LOW);

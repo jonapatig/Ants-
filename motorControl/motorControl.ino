@@ -21,5 +21,5 @@ void loop() {
     }
 
     motorController.update();
-    delay(10);
+    delay(1);
 }
