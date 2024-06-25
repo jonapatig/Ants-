@@ -35,7 +35,7 @@ void RPMclass::countRPM() {
         // 60000 is one minute, there are two triggers on one rotation so divide by two makes 30000
         float measuredRPM = 15000 / (interruptTime - instance->previousInterrupt);
 
-        instance->RPM = (instance->RPM +0.5* measuredRPM)/1.5; // change this to add filters and such
+        instance->RPM = (instance->RPM + measuredRPM)/2; // change this to add filters and such
         instance->previousInterrupt = interruptTime;
         interruptFlag = true;  // Set the interrupt flag
     }
