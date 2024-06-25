@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <FastLED.h>
-#include <TaskScheduler.h>
 
 #include "AntSelect.h"
 #include "CrownLeds.h"
@@ -21,8 +20,6 @@ ContinentSegment EU(7, 6);
 ContinentSegment SA(9, 8);
 ContinentSegment SEA(11, 10);
 ContinentSegment AUS(13, 12);
-
-Scheduler runner;
 
 // Function declarations
 void breathingLever();
@@ -50,48 +47,47 @@ CRGB ledsHalo[NUM_LEDS_HALO];
 CRGB ledsCrown[NUM_LEDS_CROWN];
 CRGB ledsBranch[NUM_LEDS_BRANCH];
 
-const int time = 500;
 bool currentLeverState;
 
 int currentState = 0;
 static int state = 0;
 
 // Task Functions
-void codeReset() {
+void codeReset(uint32_t currentTime) {
   if (state != currentState) {
     switch (state) {
       case 1:
-        SSA.toggleMove(time);
+        SSA.toggleMove(currentTime);
         break;
       case 2:
-        SSA.toggleMove(time);
-        NSA.toggleMove(time);
+        SSA.toggleMove(currentTime);
+        NSA.toggleMove(currentTime);
         break;
       case 3:
-        SEA.toggleMove(time);
+        SEA.toggleMove(currentTime);
         break;
       case 4:
-        SSA.toggleMove(time);
-        MEX.toggleMove(time);
-        NSA.toggleMove(time);
-        EU.toggleMove(time);
-        SA.toggleMove(time);
-        AUS.toggleMove(time);
+        SSA.toggleMove(currentTime);
+        MEX.toggleMove(currentTime);
+        NSA.toggleMove(currentTime);
+        EU.toggleMove(currentTime);
+        SA.toggleMove(currentTime);
+        AUS.toggleMove(currentTime);
         break;
       case 5:
-        SSA.toggleMove(time);
-        NSA.toggleMove(time);
-        MEX.toggleMove(time);
-        SEA.toggleMove(time);
-        AUS.toggleMove(time);
+        SSA.toggleMove(currentTime);
+        NSA.toggleMove(currentTime);
+        MEX.toggleMove(currentTime);
+        SEA.toggleMove(currentTime);
+        AUS.toggleMove(currentTime);
         break;
       case 6:
-        SEA.toggleMove(time);
-        MEX.toggleMove(time);
-        SA.toggleMove(time);
-        AUS.toggleMove(time);
+        SEA.toggleMove(currentTime);
+        MEX.toggleMove(currentTime);
+        SA.toggleMove(currentTime);
+        AUS.toggleMove(currentTime);
         break;
-    }  
+    }
     Serial.println(state);
     currentState = state;
     crownReset();
@@ -99,88 +95,79 @@ void codeReset() {
   delay(20);
 }
 
-void codeIdle() {
-  codeReset();
+void codeIdle(uint32_t currentTime) {
+  codeReset(currentTime);
   breathingHill();
 }
 
-void codeIdleA() {
+void codeIdleA(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    SSA.toggleMove(time);
+    SSA.toggleMove(currentTime);
   }
   breathingLever();
   delay(20);
 }
 
-void codeIdleR() {
+void codeIdleR(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    SSA.toggleMove(time);
-    NSA.toggleMove(time);
+    SSA.toggleMove(currentTime);
+    NSA.toggleMove(currentTime);
   }
   breathingLever();
   delay(20);
 }
 
-void codeIdleY() {
+void codeIdleY(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    SEA.toggleMove(time);
+    SEA.toggleMove(currentTime);
   }
   breathingLever();
   delay(20);
 }
 
-void codeActiveA() {
+void codeActiveA(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    MEX.toggleMove(time);
-    NSA.toggleMove(time);
-    EU.toggleMove(time);
-    SA.toggleMove(time);
-    AUS.toggleMove(time);
+    MEX.toggleMove(currentTime);
+    NSA.toggleMove(currentTime);
+    EU.toggleMove(currentTime);
+    SA.toggleMove(currentTime);
+    AUS.toggleMove(currentTime);
   }
   displayAntA();
   delay(20);
 }
 
-void codeActiveR() {
+void codeActiveR(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    MEX.toggleMove(time);
-    SEA.toggleMove(time);
-    AUS.toggleMove(time);
+    MEX.toggleMove(currentTime);
+    SEA.toggleMove(currentTime);
+    AUS.toggleMove(currentTime);
   }
   displayAntR();
   delay(20);
 }
 
-void codeActiveY() {
+void codeActiveY(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    MEX.toggleMove(time);
-    SA.toggleMove(time);
-    AUS.toggleMove(time);
+    MEX.toggleMove(currentTime);
+    SA.toggleMove(currentTime);
+    AUS.toggleMove(currentTime);
   }
   displayAntY();
   delay(20);
 }
-
-// Task Declarations
-Task taskIdle(50, TASK_FOREVER, &codeIdle);
-Task taskIdleA(50, TASK_FOREVER, &codeIdleA);
-Task taskIdleR(50, TASK_FOREVER, &codeIdleR);
-Task taskIdleY(50, TASK_FOREVER, &codeIdleY);
-Task taskActiveA(50, TASK_FOREVER, &codeActiveA);
-Task taskActiveR(50, TASK_FOREVER, &codeActiveR);
-Task taskActiveY(50, TASK_FOREVER, &codeActiveY);
 
 void setup() {
   Serial.begin(9600);
@@ -223,23 +210,12 @@ void setup() {
 
 void loop() {
   static uint32_t lastSwitchTime = 0;
-  long int time = millis();
-
-  // Disable all tasks
-  taskIdle.disable();
-  taskIdleA.disable();
-  taskIdleR.disable();
-  taskIdleY.disable();
-  taskActiveA.disable();
-  taskActiveR.disable();
-  taskActiveY.disable();
+  uint32_t currentTime = millis();
 
   bool lever = digitalRead(leverPin);
   bool ant1 = digitalRead(rfid1);
   bool ant2 = digitalRead(rfid2);
   bool ant3 = digitalRead(rfid3);
-
-  // Serial.println(lever);
 
   // Decide which runmode to do
   if (ant1 || ant2 || ant3) {
@@ -265,45 +241,38 @@ void loop() {
     state = 0;
   }
 
-  // Enable the current task based on the state
+  // Execute the current state function
   switch (state) {
     case 0:
-      runner.addTask(taskIdle);
-      taskIdle.enable();
+      codeIdle(currentTime);
       break;
     case 1:
-      runner.addTask(taskIdleA);
-      taskIdleA.enable();
+      codeIdleA(currentTime);
       break;
     case 2:
-      runner.addTask(taskIdleR);
-      taskIdleR.enable();
+      codeIdleR(currentTime);
       break;
     case 3:
-      runner.addTask(taskIdleY);
-      taskIdleY.enable();
+      codeIdleY(currentTime);
       break;
     case 4:
-      runner.addTask(taskActiveA);
-      taskActiveA.enable();
+      codeActiveA(currentTime);
       break;
     case 5:
-      runner.addTask(taskActiveR);
-      taskActiveR.enable();
+      codeActiveR(currentTime);
       break;
     case 6:
-      runner.addTask(taskActiveY);
-      taskActiveY.enable();
+      codeActiveY(currentTime);
       break;
   }
-  MEX.move(180, time);
-  NSA.move(180, time);
-  SSA.move(180, time);
-  EU.move(180, time);
-  SA.move(180, time);
-  SEA.move(180, time);
-  AUS.move(180, time);
-  runner.execute();  // Execute the scheduler
+
+  MEX.move(180, currentTime);
+  NSA.move(180, currentTime);
+  SSA.move(180, currentTime);
+  EU.move(180, currentTime);
+  SA.move(180, currentTime);
+  SEA.move(180, currentTime);
+  AUS.move(180, currentTime);
   FastLED.show();
   delay(10);
 }
