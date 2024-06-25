@@ -15,10 +15,10 @@ void damagedEco1();
 void damagedEco2();
 
 const int NUM_LEDS_HALO = 96;
-const int DATA_PIN_HALO = 6;
+const int DATA_PIN_HALO = 19;
 
 const int NUM_LEDS_BRANCH = 22;
-const int DATA_PIN_BRANCH = 5;
+const int DATA_PIN_BRANCH = 21;
 
 CRGB ledsHalo[NUM_LEDS_HALO];
 CRGB ledsBranch[NUM_LEDS_BRANCH];

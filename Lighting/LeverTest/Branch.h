@@ -1,10 +1,10 @@
-// #ifndef BRANCH_H
-// #define BRANCH_H
+#ifndef BRANCH_H
+#define BRANCH_H
 
-// #include <FastLED.h>
+#include <FastLED.h>
 
-// extern CRGB ledsBranch[];
+extern CRGB ledsBranch[];
 
-// void runBranch();
+void runBranch();
 
-// #endif
+#endif

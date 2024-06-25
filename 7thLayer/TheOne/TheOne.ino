@@ -48,55 +48,86 @@ CRGB ledsCrown[NUM_LEDS_CROWN];
 CRGB ledsBranch[NUM_LEDS_BRANCH];
 
 bool currentLeverState;
+bool state0Activated = false;
+bool state123Activated = false;
 
 int currentState = 0;
 static int state = 0;
 
+
+void raiseArgentineOrigin(long int time) {
+  SSA.toggleMove(time);
+  Serial.println("Raising Argentine Origin");
+}
+
+void raiseArgentineSpread(long int time) {
+  MEX.toggleMove(time);
+  NSA.toggleMove(time);
+  EU.toggleMove(time);
+  SA.toggleMove(time);
+  AUS.toggleMove(time);
+  Serial.println("Raising Argentine Spread");
+}
+
+void raiseRedFireOrigin(long int time) {
+  NSA.toggleMove(time);
+  SSA.toggleMove(time);
+  Serial.println("Raising Argentine Origin");
+}
+
+void raiseRedFireSpread(long int time) {
+  MEX.toggleMove(time);
+  SEA.toggleMove(time);
+  AUS.toggleMove(time);
+  Serial.println("Raising Argentine Spread");
+}
+
+void raiseYellowCrazyOrigin(long int time) {
+  SEA.toggleMove(time);
+  Serial.println("Raising Argentine Origin");
+}
+
+void raiseYellowCrazySpread(long int time) {
+  MEX.toggleMove(time);
+  SA.toggleMove(time);
+  AUS.toggleMove(time);
+  Serial.println("Raising Argentine Spread");
+}
+
 // Task Functions
 void codeReset(uint32_t currentTime) {
   if (state != currentState) {
-    switch (state) {
+    switch (currentState) {
       case 1:
-        SSA.toggleMove(currentTime);
+        raiseArgentineOrigin(currentTime);
         break;
       case 2:
-        SSA.toggleMove(currentTime);
-        NSA.toggleMove(currentTime);
+        raiseRedFireOrigin(currentTime);
         break;
       case 3:
-        SEA.toggleMove(currentTime);
+        raiseYellowCrazyOrigin(currentTime);
         break;
       case 4:
-        SSA.toggleMove(currentTime);
-        MEX.toggleMove(currentTime);
-        NSA.toggleMove(currentTime);
-        EU.toggleMove(currentTime);
-        SA.toggleMove(currentTime);
-        AUS.toggleMove(currentTime);
+        raiseArgentineOrigin(currentTime);
+        raiseArgentineSpread(currentTime);
         break;
       case 5:
-        SSA.toggleMove(currentTime);
-        NSA.toggleMove(currentTime);
-        MEX.toggleMove(currentTime);
-        SEA.toggleMove(currentTime);
-        AUS.toggleMove(currentTime);
+        raiseRedFireOrigin(currentTime);
+        raiseRedFireSpread(currentTime);
         break;
       case 6:
-        SEA.toggleMove(currentTime);
-        MEX.toggleMove(currentTime);
-        SA.toggleMove(currentTime);
-        AUS.toggleMove(currentTime);
+        raiseYellowCrazyOrigin(currentTime);
+        raiseYellowCrazySpread(currentTime);
         break;
     }
-    Serial.println(state);
-    currentState = state;
     crownReset();
   }
-  delay(20);
+  delay(1);
 }
 
 void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
+  currentState = state;
   breathingHill();
 }
 
@@ -104,69 +135,60 @@ void codeIdleA(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    SSA.toggleMove(currentTime);
+    raiseArgentineOrigin(currentTime);
   }
   breathingLever();
-  delay(20);
+  delay(1);
 }
 
 void codeIdleR(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    SSA.toggleMove(currentTime);
-    NSA.toggleMove(currentTime);
+    raiseRedFireOrigin(currentTime);
   }
   breathingLever();
-  delay(20);
+  delay(1);
 }
 
 void codeIdleY(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    SEA.toggleMove(currentTime);
+    raiseYellowCrazyOrigin(currentTime);
   }
   breathingLever();
-  delay(20);
+  delay(1);
 }
 
 void codeActiveA(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    MEX.toggleMove(currentTime);
-    NSA.toggleMove(currentTime);
-    EU.toggleMove(currentTime);
-    SA.toggleMove(currentTime);
-    AUS.toggleMove(currentTime);
+    raiseArgentineSpread(currentTime);
   }
   displayAntA();
-  delay(20);
+  delay(1);
 }
 
 void codeActiveR(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    MEX.toggleMove(currentTime);
-    SEA.toggleMove(currentTime);
-    AUS.toggleMove(currentTime);
+    raiseRedFireSpread(currentTime);
   }
   displayAntR();
-  delay(20);
+  delay(1);
 }
 
 void codeActiveY(uint32_t currentTime) {
   if (state != currentState) {
     Serial.println(state);
     currentState = state;
-    MEX.toggleMove(currentTime);
-    SA.toggleMove(currentTime);
-    AUS.toggleMove(currentTime);
+    raiseYellowCrazySpread(currentTime);
   }
   displayAntY();
-  delay(20);
+  delay(1);
 }
 
 void setup() {
@@ -216,29 +238,42 @@ void loop() {
   bool ant1 = digitalRead(rfid1);
   bool ant2 = digitalRead(rfid2);
   bool ant3 = digitalRead(rfid3);
-
   // Decide which runmode to do
+  Serial.print("Ant1: ");
+  Serial.print(ant1);
+  Serial.print(" | Ant2: ");
+  Serial.print(ant2);
+  Serial.print(" | Ant3: ");
+  Serial.print(ant3);
+  Serial.println("");
+
   if (ant1 || ant2 || ant3) {
     if (lever != currentLeverState) {
-      if (ant1) {
-        state = 4;
-      } else if (ant2) {
-        state = 5;
-      } else if (ant3) {
-        state = 6;
+      if (state123Activated) {
+        if (ant1) {
+          state = 4;
+        } else if (ant2) {
+          state = 5;
+        } else if (ant3) {
+          state = 6;
+        }
       }
     } else {
-      if (ant1) {
-        state = 1;
-      } else if (ant2) {
-        state = 2;
-      } else if (ant3) {
-        state = 3;
+      if (state0Activated) {
+        if (ant1) {
+          state = 1;
+        } else if (ant2) {
+          state = 2;
+        } else if (ant3) {
+          state = 3;
+        }
+        state123Activated = true;
       }
     }
     currentLeverState = lever;
   } else {
     state = 0;
+    state0Activated = true;
   }
 
   // Execute the current state function
@@ -266,13 +301,13 @@ void loop() {
       break;
   }
 
-  MEX.move(180, currentTime);
-  NSA.move(180, currentTime);
-  SSA.move(180, currentTime);
-  EU.move(180, currentTime);
-  SA.move(180, currentTime);
-  SEA.move(180, currentTime);
-  AUS.move(180, currentTime);
+  MEX.move(100, currentTime);
+  NSA.move(100, currentTime);
+  SSA.move(100, currentTime);
+  EU.move(100, currentTime);
+  SA.move(100, currentTime);
+  SEA.move(100, currentTime);
+  AUS.move(100, currentTime);
   FastLED.show();
   delay(10);
 }
