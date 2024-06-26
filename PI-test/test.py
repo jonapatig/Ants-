@@ -6,7 +6,7 @@ import serial
 import time
 import cv2
 # Load an image from file
-image_path = 'PI-test\Schermafbeelding 2023-11-08 222452.png'  # Replace with the actual path to your image file
+image_path = 'Schermafbeelding 2023-11-08 222452.png'  # Replace with the actual path to your image file
 image = cv2.imread(image_path)
 
 if image is None:
