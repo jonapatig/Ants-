@@ -16,8 +16,8 @@ void ContinentSegment::begin() {
 void ContinentSegment::toggleMove(long int time) {
   shouldMove = true;
   prevTime = time;
-  Serial.print("shouldMove toggled to: ");
-  Serial.println(shouldMove);
+  // Serial.print("shouldMove toggled to: ");
+  // Serial.println(shouldMove);
 }
 
 void ContinentSegment::untoggleMove(int speed, long int time) {

@@ -5,8 +5,6 @@ int NUM_LEDS = 155;
 static int brightness[5] = {0, 0, 0, 0, 0};
 
 
-
-
 void fillRow(int startIdx, int numLeds, float percentage, CRGB color, uint8_t brightness) {
     int ledsToFill = round(numLeds * percentage);
     int center = numLeds / 2;
@@ -29,7 +27,7 @@ void myPercentage(float percentage, CRGB color, unsigned long int duration) {
     static int direction[5] = {10, 8, 6, 4, 2};
     unsigned long currentTime = millis();
 
-    if (currentTime - lastTime >= 50) {
+    if (currentTime - lastTime >= 100) {
         for (int i = 0; i < 5; i++) {
             if (brightness[i] < 255) {
                 brightness[i] += direction[i];
@@ -83,7 +81,7 @@ void crownReset() {
         }
     }
 
-    if (currentTime - lastTime >= 50) {
+    if (currentTime - lastTime >= 100) {
         bool allRowsDimmed = true;
 
         for (int i = 0; i < 5; i++) {
@@ -123,4 +121,3 @@ void crownReset() {
 //         brightness[i] = 0;
 //     }
 //     FastLED.show();
-// }

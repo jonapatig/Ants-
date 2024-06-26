@@ -131,7 +131,6 @@ void codeReset(uint32_t currentTime) {
     }
     state0Activated = false;
     state123Activated = false;
-    crownReset();
   }
   delay(1);
 }
@@ -139,9 +138,10 @@ void codeReset(uint32_t currentTime) {
 void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
   prevState = state;
+  crownReset();
   runBranch();
   fullEco();
-  breathingLever();
+  breathingHill();
 }
 
 void codeIdleA(uint32_t currentTime) {
@@ -170,17 +170,16 @@ void codeIdleY(uint32_t currentTime) {
     prevState = state;
     raiseYellowCrazyOrigin(currentTime);
   }
-  
-  breathingLever();
+  breathingHill();
   delay(1);
 }
 
-// Timings for the sytem
+// Timings for the system
 uint32_t startTime = 0;
 int invasionTransition = 5000;
-int ecoTransition = 5000;
-int moneyTransition = 5000;
-int endTransition = 5000;
+int ecoTransition = invasionTransition + 5000;
+int moneyTransition = ecoTransition + 5000;
+int endTransition = moneyTransition+ 5000;
 
 void codeActiveA(uint32_t currentTime) {
   if (state != prevState) {
@@ -189,19 +188,19 @@ void codeActiveA(uint32_t currentTime) {
     raiseArgentineSpread(currentTime);
     startTime = currentTime;
   }
-  else{
-    if(invasionTransition <= startTime <= ecoTransition){
+  else {
+    if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
       runBranch();
       fullEco();
     }
-    else if(ecoTransition <= startTime <= moneyTransition){
+    else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
     }
-    else if(moneyTransition <= startTime <= endTransition){
+    else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntA();
     }
-    else{
-
+    else {
+      // Add any code here if needed for states not covered above
     }
   }
   delay(1);
@@ -214,25 +213,24 @@ void codeActiveR(uint32_t currentTime) {
     raiseRedFireSpread(currentTime);
     startTime = currentTime;
   }
-  else{
-    if(invasionTransition <= startTime <= ecoTransition){
+  else {
+    if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
       runBranch();
       fullEco();
       Serial.println("Invasion");
     }
-    else if(ecoTransition <= startTime <= moneyTransition){
+    else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
       Serial.println("EcoDamage");
     }
-    else if(moneyTransition <= startTime <= endTransition){
+    else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntR();
       Serial.println("MoneyDamage");
     }
-    else{
+    else if (endTransition + startTime < currentTime){
       Serial.println("End");
     }
   }
-  displayAntR();
   delay(1);
 }
 
@@ -243,24 +241,24 @@ void codeActiveY(uint32_t currentTime) {
     raiseYellowCrazySpread(currentTime);
     startTime = currentTime;
   }
-  else{
-    if(invasionTransition <= startTime <= ecoTransition){
+  else {
+    if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
       runBranch();
       fullEco();
     }
-    else if(ecoTransition <= startTime <= moneyTransition){
+    else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco1();
     }
-    else if(moneyTransition <= startTime <= endTransition){
+    else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntY();
     }
-    else{
-      
+    else {
+      // Add any code here if needed for states not covered above
     }
   }
-  displayAntY();
   delay(1);
 }
+
 
 void setup() {
   Serial.begin(9600);
@@ -309,14 +307,6 @@ void loop() {
   bool ant1 = digitalRead(rfid1);
   bool ant2 = digitalRead(rfid2);
   bool ant3 = digitalRead(rfid3);
-  // Decide which runmode to do
-  Serial.print("Ant1: ");
-  Serial.print(ant1);
-  Serial.print(" | Ant2: ");
-  Serial.print(ant2);
-  Serial.print(" | Ant3: ");
-  Serial.print(ant3);
-  Serial.println("");
 
   if (ant1 || ant2 || ant3) {
     if (lever != currentLeverState) {
