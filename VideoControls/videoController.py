@@ -22,7 +22,7 @@ segments = [
     (1800, 2399),  
     (1200, 1799),
     (600, 1199),
-    (3600, 3199),
+    (3600, 4199),
     (3000, 3599),
     (2400, 2999),
     (0, 599),
@@ -39,7 +39,7 @@ track_4 = pg.mixer.Sound("natureToLayer.wav")
 
 sfx = [pg.mixer.Sound("countryRisingSFX.wav"), pg.mixer.Sound("antsToQueenSFX.wav"), pg.mixer.Sound("queenEatingSFX.wav")]
 
-pg.mixer.set_num_channels(100)
+pg.mixer.set_num_channels(20)
 
 pg.mixer.find_channel().play(track_1, loops=-1)
 pg.mixer.find_channel().play(track_2, loops=-1)
@@ -56,14 +56,14 @@ channel_2_on = False
 channel_3_on = False
 channel_4_on = False
 
-stupidFuckingValueThatSpeedsShitUp = 2
+stupidFuckingValueThatSpeedsShitUp = 1
 
 fps = 30
 cv2.namedWindow('Fullscreen', cv2.WINDOW_NORMAL)
 cv2.setWindowProperty('Fullscreen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 ##########################################
 # Arduino serial as input
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
 ##########################################
 
 def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment):
@@ -135,10 +135,10 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
                 cap.release()
                 return int(current_frame), current_phase, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment
         ##########################################
-        if int(current_frame) % stupidFuckingValueThatSpeedsShitUp == 0:
-            key = cv2.waitKey(1)
-            if key == ord('q'):
-                break
+        # if int(current_frame) % stupidFuckingValueThatSpeedsShitUp == 0:
+        key = cv2.waitKey(int(1000/fps))
+        if key == ord('q'):
+            break
             
     
     cap.release()
