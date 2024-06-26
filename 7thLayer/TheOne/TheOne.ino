@@ -6,6 +6,7 @@
 #include "EcoHalo.h"
 #include "EcoBranch.h"
 #include "ContinentSegment.h"
+#include "ConveyorBeltController.h"
 
 const int leverPin = 22;  // Lever
 const int rfid1 = 23;     // Ant A
@@ -24,6 +25,7 @@ ContinentSegment AUS(13, 12);
 // Function declarations
 void breathingLever();
 void breathingHill();
+void activeHill();
 void displayAntA();
 void displayAntR();
 void displayAntY();
@@ -54,6 +56,7 @@ const int DATA_PIN_BRANCH = 21;
 
 // Conveyor Pin
 const int DATA_PIN_CONVEYOR = 17;
+ConveyorBeltController conveyor(DATA_PIN_CONVEYOR);
 
 CRGB ledsAnts[NUM_LEDS_ANTS];
 CRGB ledsHalo[NUM_LEDS_HALO];
@@ -69,7 +72,6 @@ int state = 0;
 
 void raiseArgentineOrigin(long int time) {
   SSA.toggleMove(time);
-  Serial.println("Raising Argentine Origin");
 }
 
 void raiseArgentineSpread(long int time) {
@@ -78,32 +80,27 @@ void raiseArgentineSpread(long int time) {
   EU.toggleMove(time);
   SA.toggleMove(time);
   AUS.toggleMove(time);
-  Serial.println("Raising Argentine Spread");
 }
 
 void raiseRedFireOrigin(long int time) {
   NSA.toggleMove(time);
   SSA.toggleMove(time);
-  Serial.println("Raising Argentine Origin");
 }
 
 void raiseRedFireSpread(long int time) {
   MEX.toggleMove(time);
   SEA.toggleMove(time);
   AUS.toggleMove(time);
-  Serial.println("Raising Argentine Spread");
 }
 
 void raiseYellowCrazyOrigin(long int time) {
   SEA.toggleMove(time);
-  Serial.println("Raising Argentine Origin");
 }
 
 void raiseYellowCrazySpread(long int time) {
   MEX.toggleMove(time);
   SA.toggleMove(time);
   AUS.toggleMove(time);
-  Serial.println("Raising Argentine Spread");
 }
 
 // Task Functions
@@ -140,7 +137,10 @@ void codeReset(uint32_t currentTime) {
 
 void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
-  prevState = state;
+  if (state != prevState) {
+    Serial.println(state);
+    prevState = state;
+  }
   crownReset();
   // runBranch();
   fullEco();
@@ -174,7 +174,7 @@ void codeIdleY(uint32_t currentTime) {
     prevState = state;
     raiseYellowCrazyOrigin(currentTime);
   }
-  breathingHill();
+  breathingLever();
   delay(1);
 }
 
@@ -184,6 +184,7 @@ int invasionTransition = 5000;
 int ecoTransition = invasionTransition + 5000;
 int moneyTransition = ecoTransition + 5000;
 int endTransition = moneyTransition+ 5000;
+int resetDone = endTransition + 5000;
 
 void codeActiveA(uint32_t currentTime) {
   if (state != prevState) {
@@ -204,11 +205,19 @@ void codeActiveA(uint32_t currentTime) {
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntA();
+      conveyor.argentine();
     }
-    else {
-      // Add any code here if needed for states not covered above
+    else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)){
+      conveyor.stop();
+      if (state != prevState) {
+        Serial.println(8);
+        prevState = 8;
+        raiseRedFireSpread(currentTime);
+        startTime = currentTime;
+      }
     }
   }
+  hillActive();
   delay(1);
 }
 
@@ -233,12 +242,19 @@ void codeActiveR(uint32_t currentTime) {
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntR();
-      Serial.println("MoneyDamage");
+      conveyor.redFire();
     }
-    else if (endTransition + startTime < currentTime){
-      Serial.println("End");
+    else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)){
+      conveyor.stop();
+      if (state != prevState) {
+        Serial.println(8);
+        prevState = 8;
+        raiseRedFireSpread(currentTime);
+        startTime = currentTime;
+      }
     }
   }
+  hillActive();
   delay(1);
 }
 
@@ -260,21 +276,31 @@ void codeActiveY(uint32_t currentTime) {
       damagedEcoBranch1();
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+      conveyor.yellowCrazy();
       displayAntY();
     }
-    else {
-      // Add any code here if needed for states not covered above
+    else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)){
+      conveyor.stop();
+      if (state != prevState) {
+        Serial.println(8);
+        prevState = 8;
+        raiseRedFireSpread(currentTime);
+        startTime = currentTime;
+      }
     }
   }
+  hillActive();
   delay(1);
 }
 
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Setup Initialized");
+  // Serial.println("Setup Initialized");
 
   currentLeverState = !digitalRead(leverPin);
+  Serial.println(state);
+  conveyor.setup();
 
   // External Arduino Setup
   pinMode(leverPin, INPUT);
@@ -355,12 +381,30 @@ void loop() {
       break;
     case 1:
       codeIdleA(currentTime);
+      if(lever){
+        leverBackward();
+      }
+      else{
+        leverForward();
+      }
       break;
     case 2:
       codeIdleR(currentTime);
+      if(lever){
+        leverBackward();
+      }
+      else{
+        leverForward();
+      }
       break;
     case 3:
       codeIdleY(currentTime);
+      if(lever){
+        leverBackward();
+      }
+      else{
+        leverForward();
+      }
       break;
     case 4:
       codeActiveA(currentTime);
