@@ -58,10 +58,11 @@ channel_2_on = False
 channel_3_on = False
 channel_4_on = False
 
-stupidFuckingValueThatSpeedsShitUp = 1
+stupidFuckingValueThatSpeedsShitUp = 2
 
 fps = 100
-
+cv2.namedWindow('Fullscreen', cv2.WINDOW_NORMAL)
+cv2.setWindowProperty('Fullscreen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 ##########################################
 # Arduino serial as input
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
@@ -113,7 +114,7 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
         if current_frame > end_frame:
             cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
         
-        cv2.imshow('Video', frame)
+        cv2.imshow('Fullscreen', frame)
 
         ##########################################
         # Keyboard as input
@@ -146,7 +147,7 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
     cv2.destroyAllWindows()
     return None
 
-video_path = 'VideoControls/testVideo.mp4'
+video_path = 'testVideo.mp4'
 
 segment_index = 0
 start_frame, end_frame = segments[segment_index]
