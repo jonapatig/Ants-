@@ -4,7 +4,7 @@
 #include "AntSelect.h"
 #include "CrownLeds.h"
 #include "EcoHalo.h"
-#include "Branch.h"
+#include "EcoBranch.h"
 #include "ContinentSegment.h"
 
 const int leverPin = 22;  // Lever
@@ -28,12 +28,15 @@ void displayAntA();
 void displayAntR();
 void displayAntY();
 void crownReset();
-void runBranch();
-void branch1();
-void branch2();
+// void runBranch();
+// void branch1();
+// void branch2();
 void fullEco();
 void damagedEco1();
 void damagedEco2();
+void fullEcoBranch();
+void damagedEcoBranch1();
+void damagedEcoBranch2();
 
 
 // LED Definitions
@@ -139,8 +142,9 @@ void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
   prevState = state;
   crownReset();
-  runBranch();
+  // runBranch();
   fullEco();
+  fullEcoBranch();
   breathingHill();
 }
 
@@ -190,11 +194,13 @@ void codeActiveA(uint32_t currentTime) {
   }
   else {
     if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
-      runBranch();
+      // runBranch();
       fullEco();
+      fullEcoBranch();
     }
     else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
+      damagedEcoBranch2();
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntA();
@@ -215,12 +221,14 @@ void codeActiveR(uint32_t currentTime) {
   }
   else {
     if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
-      runBranch();
+      // runBranch();
       fullEco();
+      fullEcoBranch();
       Serial.println("Invasion");
     }
     else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
+      damagedEcoBranch2();
       Serial.println("EcoDamage");
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
@@ -243,11 +251,13 @@ void codeActiveY(uint32_t currentTime) {
   }
   else {
     if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
-      runBranch();
+      // runBranch();
       fullEco();
+      fullEcoBranch();
     }
     else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco1();
+      damagedEcoBranch1();
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       displayAntY();
