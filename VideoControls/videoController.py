@@ -64,7 +64,7 @@ fps = 100
 
 ##########################################
 # Arduino serial as input
-ser = serial.Serial("/dev/cu.usbserial-2120", 9600, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
 ##########################################
 
 def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment):
