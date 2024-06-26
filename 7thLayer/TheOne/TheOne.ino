@@ -28,6 +28,13 @@ void displayAntA();
 void displayAntR();
 void displayAntY();
 void crownReset();
+void runBranch();
+void branch1();
+void branch2();
+void fullEco();
+void damagedEco1();
+void damagedEco2();
+
 
 // LED Definitions
 const int NUM_LEDS_ANTS = 180;
@@ -42,6 +49,9 @@ const int DATA_PIN_CROWN = 20;
 const int NUM_LEDS_BRANCH = 22;
 const int DATA_PIN_BRANCH = 21;
 
+// Conveyor Pin
+const int DATA_PIN_CONVEYOR = 17;
+
 CRGB ledsAnts[NUM_LEDS_ANTS];
 CRGB ledsHalo[NUM_LEDS_HALO];
 CRGB ledsCrown[NUM_LEDS_CROWN];
@@ -53,7 +63,6 @@ bool state123Activated = false;
 
 int prevState = 0;
 int state = 0;
-
 
 void raiseArgentineOrigin(long int time) {
   SSA.toggleMove(time);
@@ -130,7 +139,9 @@ void codeReset(uint32_t currentTime) {
 void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
   prevState = state;
-  breathingHill();
+  runBranch();
+  fullEco();
+  breathingLever();
 }
 
 void codeIdleA(uint32_t currentTime) {
@@ -159,17 +170,40 @@ void codeIdleY(uint32_t currentTime) {
     prevState = state;
     raiseYellowCrazyOrigin(currentTime);
   }
+  
   breathingLever();
   delay(1);
 }
+
+// Timings for the sytem
+uint32_t startTime = 0;
+int invasionTransition = 5000;
+int ecoTransition = 5000;
+int moneyTransition = 5000;
+int endTransition = 5000;
 
 void codeActiveA(uint32_t currentTime) {
   if (state != prevState) {
     Serial.println(state);
     prevState = state;
     raiseArgentineSpread(currentTime);
+    startTime = currentTime;
   }
-  displayAntA();
+  else{
+    if(invasionTransition <= startTime <= ecoTransition){
+      runBranch();
+      fullEco();
+    }
+    else if(ecoTransition <= startTime <= moneyTransition){
+      damagedEco2();
+    }
+    else if(moneyTransition <= startTime <= endTransition){
+      displayAntA();
+    }
+    else{
+
+    }
+  }
   delay(1);
 }
 
@@ -178,6 +212,25 @@ void codeActiveR(uint32_t currentTime) {
     Serial.println(state);
     prevState = state;
     raiseRedFireSpread(currentTime);
+    startTime = currentTime;
+  }
+  else{
+    if(invasionTransition <= startTime <= ecoTransition){
+      runBranch();
+      fullEco();
+      Serial.println("Invasion");
+    }
+    else if(ecoTransition <= startTime <= moneyTransition){
+      damagedEco2();
+      Serial.println("EcoDamage");
+    }
+    else if(moneyTransition <= startTime <= endTransition){
+      displayAntR();
+      Serial.println("MoneyDamage");
+    }
+    else{
+      Serial.println("End");
+    }
   }
   displayAntR();
   delay(1);
@@ -188,6 +241,22 @@ void codeActiveY(uint32_t currentTime) {
     Serial.println(state);
     prevState = state;
     raiseYellowCrazySpread(currentTime);
+    startTime = currentTime;
+  }
+  else{
+    if(invasionTransition <= startTime <= ecoTransition){
+      runBranch();
+      fullEco();
+    }
+    else if(ecoTransition <= startTime <= moneyTransition){
+      damagedEco1();
+    }
+    else if(moneyTransition <= startTime <= endTransition){
+      displayAntY();
+    }
+    else{
+      
+    }
   }
   displayAntY();
   delay(1);

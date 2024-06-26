@@ -34,14 +34,14 @@ void breathingLever() {
     CRGB currentColor1 = color1.fadeToBlackBy(255 - brightness);
     CRGB currentColor2 = color2.fadeToBlackBy(255 - brightness);
 
-    for(int i = 0; i <= 97; i++){
+    for (int i = 0; i <= 95; i++) {
       ledsAnts[i] = CRGB::Black;
     }
     // Set the color based on the brightness
-    for (int i = 98; i <= 129; i++) {
+    for (int i = 96; i <= 125; i++) {
       ledsAnts[i] = zone2Active ? currentColor1 : CRGB::Black;
     }
-    for (int i = 130; i <= 149; i++) {
+    for (int i = 126; i <= 170; i++) {
       ledsAnts[i] = zone3Active ? currentColor2 : CRGB::Black;
     }
 
@@ -77,13 +77,13 @@ void breathingHill() {
     CRGB currentColor2 = color2.fadeToBlackBy(255 - brightness);
 
     // Set the color based on the brightness
-    for (int i = 0; i <= 97; i++) {
+    for (int i = 0; i <= 95; i++) {
       ledsAnts[i] = zone1Active ? currentColor1 : CRGB::Black;
     }
-    for (int i = 98; i <= 129; i++) {
+    for (int i = 96; i <= 126; i++) {
       ledsAnts[i] = zone2Active ? currentColor2 : CRGB::Black;
     }
-    for (int i = 130; i <= 149; i++) {
+    for (int i = 127; i <= 170; i++) {
       ledsAnts[i] = CRGB::Black;
     }
 
