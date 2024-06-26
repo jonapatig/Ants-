@@ -5,6 +5,8 @@
 
 extern CRGB ledsBranch[];
 
-void runBranch();
+void idleBranch();
+void branch1();
+void branch2();
 
 #endif

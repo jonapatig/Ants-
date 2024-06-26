@@ -4,9 +4,7 @@
 const int numLeds = 22;
 
 void fullBranch() {
-  for (int i = 0; i < numLeds; i++) {
-    ledsBranch[i] = CRGB::Green; // Equivalent to CHSV(90, 255, 255)
-  }
+  fastLED.fill_solid(ledsBranch, numLeds, CRGB::Green);
   FastLED.show();
 }
 
@@ -45,9 +43,8 @@ void updateRunners(int numRunners, int runnerPos[], bool runnerDirection[]) {
   }
 }
 
-void runBranch() {
-  const int numRunners = 5;
-  static int runnerPos[numRunners] = {0};
+void runBranch(int runnerNum, int runnerPos[]) {
+  const int numRunners = runnerNum;
   static bool runnerDirection[numRunners] = {false};
 
   initializeRunners(numRunners, runnerPos, runnerDirection);
@@ -77,4 +74,19 @@ void runBranch() {
 
   updateRunners(numRunners, runnerPos, runnerDirection);
   FastLED.show();
+}
+
+void idleBranch(){
+  static int runnerPosIdle[6] = {0};
+  runBranch(6, runnerPosIdle);
+}
+
+void branch1(){
+  static int runnerPos1[4] = {0};
+  runBranch(4, runnerPos1);
+}
+
+void branch2(){
+  static int runnerPos2[2] = {0};
+  runBranch(2, runnerPos2);
 }
