@@ -1,3 +1,7 @@
+'''
+The magic line:
+ser = serial.Serial('/dev/ttyACM0', 9600)
+'''
 import serial
 import time
 
