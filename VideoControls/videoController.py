@@ -1,8 +1,4 @@
-"""
-First video: frame 0-144 or 00:00:00-00:01:44
-Second video: frame 145-351 or 00:01:45-00:03:51
-Third video: frame 352-601 or 00:03:52-00:06:01
-"""
+
 
 """"
 Case 0: idle
@@ -13,6 +9,7 @@ Case 4: region risen argentine -- 4 env
 Case 5: region risen red fire -- 3 env
 Case 6: region risen yellow crazy -- 4 env
 Case 7: region lowers and back to idle
+Case 8: queen eats money
 """
 
 
@@ -21,25 +18,26 @@ import pygame as pg
 import serial
 
 segments = [
-    (0, 144),    # 00:00:00 - 00:01:44
-    (145, 351),
-    (145, 351),
-    (145, 351),  # 00:01:45 - 00:03:51
-    (352, 601),
-    (352, 601),
-    (352, 601),   # 00:03:52 - 00:06:01
-    (0, 144)
+    (0, 599),
+    (1800, 2399),  
+    (1200, 1799),
+    (600, 1199),
+    (3600, 3199),
+    (3000, 3599),
+    (2400, 2999),
+    (0, 599),
+    (4200, 4799)
 ]
 
 pg.mixer.init()
 pg.init()
 
-track_1 = pg.mixer.Sound("VideoControls/nature1.wav")
-track_2 = pg.mixer.Sound("VideoControls/antPicked2.wav")
-track_3 = pg.mixer.Sound("VideoControls/antsInvading3.wav")
-track_4 = pg.mixer.Sound("VideoControls/natureToLayer.wav")
+track_1 = pg.mixer.Sound("nature1.wav")
+track_2 = pg.mixer.Sound("antPicked2.wav")
+track_3 = pg.mixer.Sound("antsInvading3.wav")
+track_4 = pg.mixer.Sound("natureToLayer.wav")
 
-sfx = [pg.mixer.Sound("VideoControls/countryRisingSFX.wav"), pg.mixer.Sound("VideoControls/antsToQueenSFX.wav"), pg.mixer.Sound("VideoControls/queenEatingSFX.wav")]
+sfx = [pg.mixer.Sound("countryRisingSFX.wav"), pg.mixer.Sound("antsToQueenSFX.wav"), pg.mixer.Sound("queenEatingSFX.wav")]
 
 pg.mixer.set_num_channels(100)
 
@@ -58,13 +56,14 @@ channel_2_on = False
 channel_3_on = False
 channel_4_on = False
 
-stupidFuckingValueThatSpeedsShitUp = 1
+stupidFuckingValueThatSpeedsShitUp = 2
 
-fps = 100
-
+fps = 30
+cv2.namedWindow('Fullscreen', cv2.WINDOW_NORMAL)
+cv2.setWindowProperty('Fullscreen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 ##########################################
 # Arduino serial as input
-ser = serial.Serial("/dev/cu.usbserial-2120", 9600, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=int(1000 / fps)) # ALL CAPS VARIABLES SHOULD BE DEFINED
 ##########################################
 
 def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment):
@@ -113,7 +112,7 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
         if current_frame > end_frame:
             cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
         
-        cv2.imshow('Video', frame)
+        cv2.imshow('Fullscreen', frame)
 
         ##########################################
         # Keyboard as input
@@ -131,7 +130,7 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
         data = ser.readline().decode().strip()
         if data:
             current_phase = int(data)
-            if current_phase in [0, 1, 2, 3, 4, 5, 6, 7] and current_phase != previous_segment:
+            if current_phase in [0, 1, 2, 3, 4, 5, 6, 7, 8] and current_phase != previous_segment:
                 print(data)
                 cap.release()
                 return int(current_frame), current_phase, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment
@@ -146,7 +145,7 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
     cv2.destroyAllWindows()
     return None
 
-video_path = 'VideoControls/testVideo.mp4'
+video_path = 'finalVideo.mp4'
 
 segment_index = 0
 start_frame, end_frame = segments[segment_index]
@@ -214,6 +213,13 @@ while True:
             channel_4_on = False
             if segment_index != previous_segment:
                 pg.mixer.find_channel().play(sfx[0])
+        case 8:
+            channel_1_on = False
+            channel_2_on = False
+            channel_3_on = True
+            channel_4_on = False
+            if segment_index != previous_segment:
+                pg.mixer.find_channel().play(sfx[2])
 
     # print(f"Volume 1: {volume_1}, Volume 2: {volume_2}, Volume 3: {volume_3}, Volume 4: {volume_4}")
 
