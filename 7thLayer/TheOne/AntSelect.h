@@ -11,6 +11,8 @@ extern CRGB ledsAnts[]; // Make sure this is declared properly to match your LED
 
 void breathingHill();
 void breathingLever();
-
+void hillActive();
+void leverForward();
+void leverBackward();
 
 #endif // ANTSELECT_H
