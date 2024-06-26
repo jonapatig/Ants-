@@ -131,7 +131,6 @@ void codeReset(uint32_t currentTime) {
     }
     state0Activated = false;
     state123Activated = false;
-    crownReset();
   }
   delay(1);
 }
@@ -139,6 +138,7 @@ void codeReset(uint32_t currentTime) {
 void codeIdle(uint32_t currentTime) {
   codeReset(currentTime);
   prevState = state;
+  crownReset();
   runBranch();
   fullEco();
   breathingHill();

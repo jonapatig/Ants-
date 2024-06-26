@@ -5,8 +5,6 @@ int NUM_LEDS = 155;
 static int brightness[5] = {0, 0, 0, 0, 0};
 
 
-
-
 void fillRow(int startIdx, int numLeds, float percentage, CRGB color, uint8_t brightness) {
     int ledsToFill = round(numLeds * percentage);
     int center = numLeds / 2;
@@ -123,4 +121,3 @@ void crownReset() {
 //         brightness[i] = 0;
 //     }
 //     FastLED.show();
-// }
