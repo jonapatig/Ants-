@@ -56,7 +56,7 @@ channel_2_on = False
 channel_3_on = False
 channel_4_on = False
 
-stupidFuckingValueThatSpeedsShitUp = 2
+stupidFuckingValueThatSpeedsShitUp = 1                                                  
 
 fps = 30
 cv2.namedWindow('Fullscreen', cv2.WINDOW_NORMAL)
