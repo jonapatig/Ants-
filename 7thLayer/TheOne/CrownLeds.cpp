@@ -29,7 +29,7 @@ void myPercentage(float percentage, CRGB color, unsigned long int duration) {
     static int direction[5] = {10, 8, 6, 4, 2};
     unsigned long currentTime = millis();
 
-    if (currentTime - lastTime >= 50) {
+    if (currentTime - lastTime >= 100) {
         for (int i = 0; i < 5; i++) {
             if (brightness[i] < 255) {
                 brightness[i] += direction[i];
@@ -83,7 +83,7 @@ void crownReset() {
         }
     }
 
-    if (currentTime - lastTime >= 50) {
+    if (currentTime - lastTime >= 100) {
         bool allRowsDimmed = true;
 
         for (int i = 0; i < 5; i++) {
