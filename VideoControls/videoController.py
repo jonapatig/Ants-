@@ -34,12 +34,12 @@ segments = [
 pg.mixer.init()
 pg.init()
 
-track_1 = pg.mixer.Sound("VideoControls/nature1.wav")
-track_2 = pg.mixer.Sound("VideoControls/antPicked2.wav")
-track_3 = pg.mixer.Sound("VideoControls/antsInvading3.wav")
-track_4 = pg.mixer.Sound("VideoControls/natureToLayer.wav")
+track_1 = pg.mixer.Sound("nature1.wav")
+track_2 = pg.mixer.Sound("antPicked2.wav")
+track_3 = pg.mixer.Sound("antsInvading3.wav")
+track_4 = pg.mixer.Sound("natureToLayer.wav")
 
-sfx = [pg.mixer.Sound("VideoControls/countryRisingSFX.wav"), pg.mixer.Sound("VideoControls/antsToQueenSFX.wav"), pg.mixer.Sound("VideoControls/queenEatingSFX.wav")]
+sfx = [pg.mixer.Sound("countryRisingSFX.wav"), pg.mixer.Sound("antsToQueenSFX.wav"), pg.mixer.Sound("queenEatingSFX.wav")]
 
 pg.mixer.set_num_channels(100)
 
