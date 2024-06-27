@@ -18,6 +18,7 @@ void RFIDclass::setup() {
 void RFIDclass::main() {
     bool cardDetected = mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial();
 
+    
     if (cardDetected) {
         // If a card is detected, check how long it has been present
         lastDetectedTime = millis(); // Update the last detected time
@@ -26,6 +27,7 @@ void RFIDclass::main() {
             cardPresent = true; // Set the card present flag
 
             int cardNumber = getCardNumber();
+            Serial.print("The ant: ");
             Serial.println(cardNumber);
             digitalWrite(card1Pin, cardNumber == 1 ? HIGH : LOW);
             digitalWrite(card2Pin, cardNumber == 2 ? HIGH : LOW);
@@ -34,8 +36,10 @@ void RFIDclass::main() {
             
         }
     } else {
+        
         // No card detected
         if (cardPresent && millis() - lastDetectedTime > debounceDelay) {
+            Serial.println("No Ant");
             // Card was previously detected but is now absent for longer than debounceDelay
             cardPresent = false;
             digitalWrite(card1Pin, LOW);
@@ -43,6 +47,7 @@ void RFIDclass::main() {
             digitalWrite(card3Pin, LOW);
         }
     }
+
 }
 
 int RFIDclass::getCardNumber() {
