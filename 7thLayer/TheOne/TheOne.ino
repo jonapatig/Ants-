@@ -128,7 +128,7 @@ void codeReset(uint32_t currentTime) {
     state0Activated = false;
     state123Activated = false;
   }
-  delay(1);
+  delay(10);
 }
 
 void codeIdle(uint32_t currentTime) {
@@ -354,6 +354,7 @@ void loop() {
     } else {
       state = 0;
       state0Activated = true;
+      lastStateChangeTime = currentTime;
     }
   }
 
