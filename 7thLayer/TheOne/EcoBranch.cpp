@@ -8,26 +8,28 @@ const int spotSize = 13;
 const int slowDownValue = 4;
 
 void runEcoBranch(int numSad) {
+    static int fullBrightness = 70;
     static int counter = 0;
     static bool raise = false;
     static int ledsBright[numLeds];
     static int colorOffset[numLeds];
-
-    // Calculate brightness based on numSad
-    int fullBrightness = 70 - (numSad * 5);
-    fullBrightness = constrain(fullBrightness, 0, 255); // Ensure brightness is within valid range
 
     if (int(random(0, numSad)) == 0) {
         int selectedLed = int(random(0, numLeds));
         ledsBright[selectedLed] = 255;
         colorOffset[selectedLed] = random(-10, 15);
     }
-    fill_solid(ledsBranch, numLeds, CHSV(96, 255, fullBrightness));
+    fill_solid(ledsBranch, numLeds, CHSV(96-(numSad*6), 255, fullBrightness));
+    // fill_solid(ledsBranch, numLeds, CRGB(255 * fullBrightness / 255, 165 * fullBrightness / 255, 79 * fullBrightness / 255));
+
 
     for (int i = 0; i < numLeds; i++) {
         if (ledsBright[i] > 0) {
             ledsBright[i] -= 3;
-            ledsBranch[i] = CHSV(80 + colorOffset[i], 255, ledsBright[i]);
+            ledsBranch[i] = CHSV(80 + colorOffset[i]-(numSad*6), 255, ledsBright[i]);
+            // ledsBranch[i] = CRGB(255 * ledsBright[i] / 255, 165 * ledsBright[i] / 255, 79 * ledsBright[i] / 255);
+
+            
         }
     }
     FastLED.show();
