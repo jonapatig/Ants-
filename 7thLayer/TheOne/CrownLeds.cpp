@@ -56,15 +56,15 @@ void myPercentage(float percentage, CRGB color, unsigned long int duration) {
 }
 
 void displayAntA() {
-    myPercentage(0.005, CRGB::Gold, 5000);
+    myPercentage(0.08, CRGB::Gold, 5000);
 }
 
 void displayAntR() {
-    myPercentage(0.98, CRGB::Gold, 5000);
+    myPercentage(0.99, CRGB::Gold, 5000);
 }
 
 void displayAntY() {
-    myPercentage(0.02, CRGB::Gold, 5000);
+    myPercentage(0.14, CRGB::Gold, 5000);
 }
 void crownReset() {
     static uint32_t lastTime = 0;

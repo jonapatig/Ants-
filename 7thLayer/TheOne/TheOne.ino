@@ -1,3 +1,5 @@
+//This code was a work of love from the entirety of the Ant Invasion team.  Though code was directly contributed by Oskar, Willem, Jona, and Chris, input and guidence was provided by the whole team!
+
 #include <Arduino.h>
 #include <FastLED.h>
 
@@ -159,6 +161,8 @@ void codeIdleA(uint32_t currentTime) {
     prevState = state;
     raiseArgentineOrigin(currentTime);
   }
+  fullEco();
+  fullEcoBranch();
   breathingLever();
   delay(1);
 }
@@ -169,6 +173,8 @@ void codeIdleR(uint32_t currentTime) {
     prevState = state;
     raiseRedFireOrigin(currentTime);
   }
+  fullEco();
+  fullEcoBranch();
   breathingLever();
   delay(1);
 }
@@ -179,6 +185,8 @@ void codeIdleY(uint32_t currentTime) {
     prevState = state;
     raiseYellowCrazyOrigin(currentTime);
   }
+  fullEco();
+  fullEcoBranch();
   breathingLever();
   delay(1);
 }
@@ -213,13 +221,12 @@ void codeActiveA(uint32_t currentTime) {
         Serial.println("7");
         state7Printed = true;
       }
-      damagedEco2();
-      damagedEcoBranch2();
       if (moneyTransition + startTime + 2000 <= currentTime){
+        damagedEco2();
+        damagedEcoBranch2();
         displayAntA();
         conveyor.argentine();
       }
-
     }
   }
   hillActive();
@@ -239,16 +246,16 @@ void codeActiveR(uint32_t currentTime) {
       fullEco();
       fullEcoBranch();
     } else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
-      damagedEco2();
-      damagedEcoBranch2();
+      damagedEco1();
+      damagedEcoBranch1();
     } else if (moneyTransition + startTime <= currentTime){
       if (!state7Printed) {
         Serial.println("7");
         state7Printed = true;
       }
-      damagedEco2();
-      damagedEcoBranch2();
       if (moneyTransition + startTime + 2000 <= currentTime){
+        damagedEco1();
+        damagedEcoBranch1();
         conveyor.redFire();
         displayAntR();
       }
@@ -272,16 +279,16 @@ void codeActiveY(uint32_t currentTime) {
       fullEco();
       fullEcoBranch();
     } else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
-      damagedEco1();
-      damagedEcoBranch1();
+      damagedEco2();
+      damagedEcoBranch2();
     } else if (moneyTransition + startTime <= currentTime){
       if (!state7Printed) {
         Serial.println("7");
         state7Printed = true;
       }
-      damagedEco2();
-      damagedEcoBranch2();
       if (moneyTransition + startTime + 2000 <= currentTime){
+        damagedEco2();
+        damagedEcoBranch2();
         conveyor.yellowCrazy();
         displayAntY();
       }
@@ -389,29 +396,35 @@ void loop() {
       break;
     case 1:
       codeIdleA(currentTime);
-      if(lever){
-        leverBackward();
-      }
-      else{
-        leverForward();
+      if (lever==currentLeverState){
+        if(lever){
+          leverBackward();
+        }
+        else{
+          leverForward();
+        }
       }
       break;
     case 2:
       codeIdleR(currentTime);
-      if(lever){
-        leverBackward();
-      }
-      else{
-        leverForward();
+      if (lever==currentLeverState){
+        if(lever){
+          leverBackward();
+        }
+        else{
+          leverForward();
+        }
       }
       break;
     case 3:
       codeIdleY(currentTime);
-      if(lever){
-        leverBackward();
-      }
-      else{
-        leverForward();
+      if (lever==currentLeverState){
+        if(lever){
+          leverBackward();
+        }
+        else{
+          leverForward();
+        }
       }
       break;
     case 4:
