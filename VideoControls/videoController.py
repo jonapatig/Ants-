@@ -8,8 +8,7 @@ Case 3: on ant hill
 Case 4: region risen argentine -- 4 env
 Case 5: region risen red fire -- 3 env
 Case 6: region risen yellow crazy -- 4 env
-Case 7: region lowers and back to idle
-Case 8: queen eats money
+Case 7: queen eats money
 """
 
 
@@ -19,13 +18,12 @@ import serial
 
 segments = [
     (0, 599),
-    (1800, 2399),  
-    (1200, 1799),
+    (1800, 2399), 
     (600, 1199),
-    (3600, 4199),
+    (1200, 1799),
     (3000, 3599),
     (2400, 2999),
-    (0, 599),
+    (3600, 4199),
     (4200, 4799)
 ]
 
@@ -63,7 +61,7 @@ cv2.namedWindow('Fullscreen', cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty('Fullscreen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 ##########################################
 # Arduino serial as input
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
+ser = serial.Serial('/dev/Case 7: region lowers and back to idlettyUSB0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
 ##########################################
 
 def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment):
@@ -130,7 +128,7 @@ def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2
         data = ser.readline().decode().strip()
         if data:
             current_phase = int(data)
-            if current_phase in [0, 1, 2, 3, 4, 5, 6, 7, 8] and current_phase != previous_segment:
+            if current_phase in [0, 1, 2, 3, 4, 5, 6, 7] and current_phase != previous_segment:
                 print(data)
                 cap.release()
                 return int(current_frame), current_phase, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment
@@ -164,6 +162,8 @@ while True:
             channel_2_on = False
             channel_3_on = False
             channel_4_on = False
+            if segment_index != previous_segment:
+                pg.mixer.find_channel().play(sfx[0])
         case 1:
             channel_1_on = False
             channel_2_on = True
@@ -192,6 +192,7 @@ while True:
             channel_4_on = False
             if segment_index != previous_segment:
                 pg.mixer.find_channel().play(sfx[1])
+                pg.mixer.find_channel().play(sfx[0])
         case 5:
             channel_1_on = False
             channel_2_on = False
@@ -199,6 +200,7 @@ while True:
             channel_4_on = True
             if segment_index != previous_segment:
                 pg.mixer.find_channel().play(sfx[1])
+                pg.mixer.find_channel().play(sfx[0])
         case 6:
             channel_1_on = False
             channel_2_on = False
@@ -206,14 +208,8 @@ while True:
             channel_4_on = False
             if segment_index != previous_segment:
                 pg.mixer.find_channel().play(sfx[1])
-        case 7:
-            channel_1_on = True
-            channel_2_on = False
-            channel_3_on = False
-            channel_4_on = False
-            if segment_index != previous_segment:
                 pg.mixer.find_channel().play(sfx[0])
-        case 8:
+        case 7:
             channel_1_on = False
             channel_2_on = False
             channel_3_on = True
