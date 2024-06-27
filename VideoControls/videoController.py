@@ -59,11 +59,11 @@ channel_4_on = False
 stupidFuckingValueThatSpeedsShitUp = 1
 
 fps = 30
-cv2.namedWindow('Fullscreen', cv2.WINDOW_NORMAL)
+cv2.namedWindow('Fullscreen', cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty('Fullscreen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 ##########################################
 # Arduino serial as input
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
 ##########################################
 
 def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment):
