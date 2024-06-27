@@ -19,11 +19,11 @@ import serial
 segments = [
     (0, 599),
     (1800, 2399), 
-    (600, 1199),
     (1200, 1799),
+    (600, 1199),
     (3000, 3599),
-    (2400, 2999),
     (3600, 4199),
+    (2400, 2999),
     (4200, 4799)
 ]
 
@@ -61,7 +61,7 @@ cv2.namedWindow('Fullscreen', cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty('Fullscreen', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 ##########################################
 # Arduino serial as input
-ser = serial.Serial('/dev/Case 7: region lowers and back to idlettyUSB0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0) # ALL CAPS VARIABLES SHOULD BE DEFINED
 ##########################################
 
 def play_video_segment(video, start_frame, end_frame, offset, volume_1, volume_2, volume_3, volume_4, channel_1_on, channel_2_on, channel_3_on, channel_4_on, previous_segment):
