@@ -25,21 +25,17 @@ ContinentSegment AUS(13, 12);
 // Function declarations
 void breathingLever();
 void breathingHill();
-void activeHill();
+void hillActive();
 void displayAntA();
 void displayAntR();
 void displayAntY();
 void crownReset();
-// void runBranch();
-// void branch1();
-// void branch2();
 void fullEco();
 void damagedEco1();
 void damagedEco2();
 void fullEcoBranch();
 void damagedEcoBranch1();
 void damagedEcoBranch2();
-
 
 // LED Definitions
 const int NUM_LEDS_ANTS = 180;
@@ -142,7 +138,6 @@ void codeIdle(uint32_t currentTime) {
     prevState = state;
   }
   crownReset();
-  // runBranch();
   fullEco();
   fullEcoBranch();
   breathingHill();
@@ -183,7 +178,7 @@ uint32_t startTime = 0;
 int invasionTransition = 10000;
 int ecoTransition = invasionTransition + 5000;
 int moneyTransition = ecoTransition + 5000;
-int endTransition = moneyTransition+ 5000;
+int endTransition = moneyTransition + 5000;
 int resetDone = endTransition + 5000;
 
 void codeActiveA(uint32_t currentTime) {
@@ -192,24 +187,19 @@ void codeActiveA(uint32_t currentTime) {
     prevState = state;
     raiseArgentineSpread(currentTime);
     startTime = currentTime;
-  }
-  else {
+  } else {
     if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
-      // runBranch();
       fullEco();
       fullEcoBranch();
-    }
-    else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
+    } else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
       damagedEcoBranch2();
-    }
-    else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+    } else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       damagedEco2();
       damagedEcoBranch2();
       displayAntA();
       conveyor.argentine();
-    }
-    else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)){
+    } else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)) {
       conveyor.stop();
       if (state != prevState) {
         Serial.println(8);
@@ -229,24 +219,19 @@ void codeActiveR(uint32_t currentTime) {
     prevState = state;
     raiseRedFireSpread(currentTime);
     startTime = currentTime;
-  }
-  else {
+  } else {
     if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
-      // runBranch();
       fullEco();
       fullEcoBranch();
-    }
-    else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
+    } else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
       damagedEcoBranch2();
-    }
-    else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+    } else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       damagedEco2();
       damagedEcoBranch2();
       displayAntR();
       conveyor.redFire();
-    }
-    else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)){
+    } else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)) {
       conveyor.stop();
       if (state != prevState) {
         Serial.println(8);
@@ -266,24 +251,19 @@ void codeActiveY(uint32_t currentTime) {
     prevState = state;
     raiseYellowCrazySpread(currentTime);
     startTime = currentTime;
-  }
-  else {
+  } else {
     if ((invasionTransition + startTime <= currentTime) && (currentTime <= ecoTransition + startTime)) {
-      // runBranch();
       fullEco();
       fullEcoBranch();
-    }
-    else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
+    } else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco1();
       damagedEcoBranch1();
-    }
-    else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+    } else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
       damagedEco2();
       damagedEcoBranch2();
       conveyor.yellowCrazy();
       displayAntY();
-    }
-    else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)){
+    } else if ((endTransition + startTime < currentTime) && (currentTime <= resetDone + startTime)) {
       conveyor.stop();
       if (state != prevState) {
         Serial.println(8);
@@ -297,15 +277,11 @@ void codeActiveY(uint32_t currentTime) {
   delay(1);
 }
 
-
 void setup() {
   Serial.begin(9600);
-  // Serial.println("Setup Initialized");
-
   currentLeverState = !digitalRead(leverPin);
-  Serial.println(state);
   conveyor.setup();
-
+  Serial.println("0");
   // External Arduino Setup
   pinMode(leverPin, INPUT);
   pinMode(rfid1, INPUT);
@@ -340,8 +316,7 @@ void setup() {
 }
 
 void loop() {
-  static uint32_t lastSwitchTime = 0;
-  static uint32_t lastStateChangeTime = 0; // Add this global variable
+  static uint32_t lastStateChangeTime = 0;
   uint32_t currentTime = millis();
 
   bool lever = digitalRead(leverPin);
@@ -349,8 +324,8 @@ void loop() {
   bool ant2 = digitalRead(rfid2);
   bool ant3 = digitalRead(rfid3);
 
-  if (currentTime - lastStateChangeTime >= 4000) {
-    if (ant1 || ant2 || ant3) { // 5 seconds delay
+  if (currentTime - lastStateChangeTime >= 5000) {
+    if (ant1 || ant2 || ant3) {
       if (lever != currentLeverState) {
         if (state123Activated) {
           if (ant1) {
@@ -375,12 +350,11 @@ void loop() {
       }
       currentLeverState = lever;
       state0Activated = false;
- // Update the timestamp
+      lastStateChangeTime = currentTime;
     } else {
       state = 0;
       state0Activated = true;
     }
-    lastStateChangeTime = currentTime;
   }
 
   // Execute the current state function
@@ -390,30 +364,12 @@ void loop() {
       break;
     case 1:
       codeIdleA(currentTime);
-      if(lever){
-        leverBackward();
-      }
-      else{
-        leverForward();
-      }
       break;
     case 2:
       codeIdleR(currentTime);
-      if(lever){
-        leverBackward();
-      }
-      else{
-        leverForward();
-      }
       break;
     case 3:
       codeIdleY(currentTime);
-      if(lever){
-        leverBackward();
-      }
-      else{
-        leverForward();
-      }
       break;
     case 4:
       codeActiveA(currentTime);
