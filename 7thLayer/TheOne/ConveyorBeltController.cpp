@@ -11,7 +11,7 @@ void ConveyorBeltController::stop() {
 }
 
 void ConveyorBeltController::argentine() {
-    myServo.write(97); // min speed
+    myServo.write(120); // min speed
 }
 
 void ConveyorBeltController::redFire() {
@@ -19,5 +19,5 @@ void ConveyorBeltController::redFire() {
 }
 
 void ConveyorBeltController::yellowCrazy() {
-    myServo.write(100); // change speed calculated the data mapping
+    myServo.write(160); // change speed calculated the data mapping
 }
