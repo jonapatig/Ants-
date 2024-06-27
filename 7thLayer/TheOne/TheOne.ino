@@ -180,7 +180,7 @@ void codeIdleY(uint32_t currentTime) {
 
 // Timings for the system
 uint32_t startTime = 0;
-int invasionTransition = 5000;
+int invasionTransition = 10000;
 int ecoTransition = invasionTransition + 5000;
 int moneyTransition = ecoTransition + 5000;
 int endTransition = moneyTransition+ 5000;
@@ -204,6 +204,8 @@ void codeActiveA(uint32_t currentTime) {
       damagedEcoBranch2();
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+      damagedEco2();
+      damagedEcoBranch2();
       displayAntA();
       conveyor.argentine();
     }
@@ -233,14 +235,14 @@ void codeActiveR(uint32_t currentTime) {
       // runBranch();
       fullEco();
       fullEcoBranch();
-      Serial.println("Invasion");
     }
     else if ((ecoTransition + startTime <= currentTime) && (currentTime <= moneyTransition + startTime)) {
       damagedEco2();
       damagedEcoBranch2();
-      Serial.println("EcoDamage");
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+      damagedEco2();
+      damagedEcoBranch2();
       displayAntR();
       conveyor.redFire();
     }
@@ -276,6 +278,8 @@ void codeActiveY(uint32_t currentTime) {
       damagedEcoBranch1();
     }
     else if ((moneyTransition + startTime <= currentTime) && (currentTime <= endTransition + startTime)) {
+      damagedEco2();
+      damagedEcoBranch2();
       conveyor.yellowCrazy();
       displayAntY();
     }
@@ -329,7 +333,7 @@ void setup() {
   FastLED.addLeds<WS2812B, DATA_PIN_ANTS, GRB>(ledsAnts, NUM_LEDS_ANTS);
   FastLED.addLeds<WS2812B, DATA_PIN_HALO, GRB>(ledsHalo, NUM_LEDS_HALO);
   FastLED.addLeds<WS2812B, DATA_PIN_CROWN, GRB>(ledsCrown, NUM_LEDS_CROWN);
-  FastLED.addLeds<WS2812B, DATA_PIN_BRANCH, GRB>(ledsBranch, NUM_LEDS_BRANCH);
+  FastLED.addLeds<WS2811, DATA_PIN_BRANCH, BRG>(ledsBranch, NUM_LEDS_BRANCH);
   FastLED.setBrightness(50);
 
   delay(500);
@@ -337,6 +341,7 @@ void setup() {
 
 void loop() {
   static uint32_t lastSwitchTime = 0;
+  static uint32_t lastStateChangeTime = 0; // Add this global variable
   uint32_t currentTime = millis();
 
   bool lever = digitalRead(leverPin);
@@ -344,34 +349,38 @@ void loop() {
   bool ant2 = digitalRead(rfid2);
   bool ant3 = digitalRead(rfid3);
 
-  if (ant1 || ant2 || ant3) {
-    if (lever != currentLeverState) {
-      if (state123Activated) {
-        if (ant1) {
-          state = 4;
-        } else if (ant2) {
-          state = 5;
-        } else if (ant3) {
-          state = 6;
+  if (currentTime - lastStateChangeTime >= 4000) {
+    if (ant1 || ant2 || ant3) { // 5 seconds delay
+      if (lever != currentLeverState) {
+        if (state123Activated) {
+          if (ant1) {
+            state = 4;
+          } else if (ant2) {
+            state = 5;
+          } else if (ant3) {
+            state = 6;
+          }
+        }
+      } else {
+        if (state0Activated) {
+          if (ant1) {
+            state = 1;
+          } else if (ant2) {
+            state = 2;
+          } else if (ant3) {
+            state = 3;
+          }
+          state123Activated = true;
         }
       }
+      currentLeverState = lever;
+      state0Activated = false;
+ // Update the timestamp
     } else {
-      if (state0Activated) {
-        if (ant1) {
-          state = 1;
-        } else if (ant2) {
-          state = 2;
-        } else if (ant3) {
-          state = 3;
-        }
-        state123Activated = true;
-      }
+      state = 0;
+      state0Activated = true;
     }
-    currentLeverState = lever;
-    state0Activated = false;
-  } else {
-    state = 0;
-    state0Activated = true;
+    lastStateChangeTime = currentTime;
   }
 
   // Execute the current state function

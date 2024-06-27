@@ -22,8 +22,8 @@ void breathingLever() {
     }
 
     // Define the colors
-    CRGB color1 = CRGB::Azure;
-    CRGB color2 = CRGB::Tomato;
+    CRGB color1 = CRGB::Goldenrod;
+    CRGB color2 = CRGB::Goldenrod;
     CRGB currentColor1 = color1.fadeToBlackBy(255 - brightness);
     CRGB currentColor2 = color2.fadeToBlackBy(255 - brightness);
 
@@ -50,8 +50,8 @@ void breathingHill() {
   static bool zone1Active = true;
   static bool zone2Active = false;
 
-  CRGB color1 = CRGB::Tomato;
-  CRGB color2 = CRGB::Yellow;
+  CRGB color1 = CRGB::Goldenrod;
+  CRGB color2 = CRGB::Goldenrod;
 
   uint32_t currentTime = millis();
 
