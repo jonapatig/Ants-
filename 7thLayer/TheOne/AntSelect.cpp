@@ -136,8 +136,8 @@ void leverForward(){
         currentPos = 9;
     }
     if(currentPos >= 0){
-        ledsAnts[125 + currentPos] = CRGB::White;
-        ledsAnts[125 + numLeds - currentPos] = CRGB::White;
+        ledsAnts[125 + currentPos] = CRGB::Goldenrod;
+        ledsAnts[125 + numLeds - currentPos] = CRGB::Goldenrod;
         if(ticker%3==0){
           currentPos--;
           ticker = 0;
@@ -158,8 +158,8 @@ void leverBackward(){
         currentPos = 0;
     }
     if(currentPos < numLeds/2){
-        ledsAnts[125 + currentPos] = CRGB::White;
-        ledsAnts[125 + numLeds - currentPos] = CRGB::White;
+        ledsAnts[125 + currentPos] = CRGB::Goldenrod;
+        ledsAnts[125 + numLeds - currentPos] = CRGB::Goldenrod;
         if(ticker%3==0){
           currentPos++;
           ticker = 0;
