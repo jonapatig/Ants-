@@ -16,12 +16,12 @@ void runHalo(int numSad) {
     ledsBright[selectedLed] = 255;
     colorOffset[selectedLed] = random(-10, 15);
   }
-  fill_solid(ledsHalo, numLeds, CHSV(96-(numSad*6), 255, fullBrightness));
+  fill_solid(ledsHalo, numLeds, CHSV(96-(numSad*8), 255, fullBrightness));
 
   for (int i = 0; i < numLeds; i++) {
     if (ledsBright[i] > 0) {
       ledsBright[i] -= 3;
-      ledsHalo[i] = CHSV(80 + colorOffset[i]-(numSad*6), 255, ledsBright[i]);
+      ledsHalo[i] = CHSV(80 + colorOffset[i]-(numSad*8), 255, ledsBright[i]);
     }
   }
 }
@@ -30,7 +30,7 @@ void fullEco() {
   runHalo(1);
 }
 void damagedEco1() {
-  runHalo(5);
+  runHalo(7);
 }
 void damagedEco2() {
   runHalo(10);

@@ -19,14 +19,14 @@ void runEcoBranch(int numSad) {
         ledsBright[selectedLed] = 255;
         colorOffset[selectedLed] = random(-10, 15);
     }
-    fill_solid(ledsBranch, numLeds, CHSV(96-(numSad*6), 255, fullBrightness));
+    fill_solid(ledsBranch, numLeds, CHSV(96-(numSad*8), 255, fullBrightness));
     // fill_solid(ledsBranch, numLeds, CRGB(255 * fullBrightness / 255, 165 * fullBrightness / 255, 79 * fullBrightness / 255));
 
 
     for (int i = 0; i < numLeds; i++) {
         if (ledsBright[i] > 0) {
             ledsBright[i] -= 3;
-            ledsBranch[i] = CHSV(80 + colorOffset[i]-(numSad*6), 255, ledsBright[i]);
+            ledsBranch[i] = CHSV(80 + colorOffset[i]-(numSad*8), 255, ledsBright[i]);
             // ledsBranch[i] = CRGB(255 * ledsBright[i] / 255, 165 * ledsBright[i] / 255, 79 * ledsBright[i] / 255);
 
             
@@ -40,7 +40,7 @@ void fullEcoBranch() {
 }
 
 void damagedEcoBranch1() {
-    runEcoBranch(5);
+    runEcoBranch(7);
 }
 
 void damagedEcoBranch2() {
